@@ -19,6 +19,9 @@ dependencies:
   '@radix-ui/react-accordion':
     specifier: ^1.1.2
     version: 1.1.2(@types/react-dom@18.2.19)(@types/react@18.2.61)(react-dom@18.2.0)(react@18.2.0)
+  '@radix-ui/react-alert-dialog':
+    specifier: ^1.0.5
+    version: 1.0.5(@types/react-dom@18.2.19)(@types/react@18.2.61)(react-dom@18.2.0)(react@18.2.0)
   '@radix-ui/react-aspect-ratio':
     specifier: ^1.0.3
     version: 1.0.3(@types/react-dom@18.2.19)(@types/react@18.2.61)(react-dom@18.2.0)(react@18.2.0)
@@ -85,6 +88,9 @@ dependencies:
   '@tremor/react':
     specifier: ^3.13.3
     version: 3.14.1(react-dom@18.2.0)(react@18.2.0)(tailwindcss@3.4.1)
+  '@uploadcare/upload-client':
+    specifier: ^6.14.1
+    version: 6.14.1
   ai:
     specifier: ^3.0.2
     version: 3.0.2(react@18.2.0)(solid-js@1.8.15)(svelte@4.2.12)(vue@3.4.21)(zod@3.22.4)
@@ -101,7 +107,7 @@ dependencies:
     specifier: ^0.7.0
     version: 0.7.0
   clsx:
-    specifier: ^2.0.0
+    specifier: ^2.1.0
     version: 2.1.0
   cmdk:
     specifier: ^0.2.0
@@ -154,8 +160,11 @@ dependencies:
   recharts:
     specifier: ^2.10.2
     version: 2.12.2(react-dom@18.2.0)(react@18.2.0)
+  sonner:
+    specifier: ^1.4.3
+    version: 1.4.3(react-dom@18.2.0)(react@18.2.0)
   tailwind-merge:
-    specifier: ^2.0.0
+    specifier: ^2.2.1
     version: 2.2.1
   tailwindcss-animate:
     specifier: ^1.0.7
@@ -1124,6 +1133,32 @@ packages:
       '@radix-ui/react-id': 1.0.1(@types/react@18.2.61)(react@18.2.0)
       '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.19)(@types/react@18.2.61)(react-dom@18.2.0)(react@18.2.0)
       '@radix-ui/react-use-controllable-state': 1.0.1(@types/react@18.2.61)(react@18.2.0)
+      '@types/react': 18.2.61
+      '@types/react-dom': 18.2.19
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@radix-ui/react-alert-dialog@1.0.5(@types/react-dom@18.2.19)(@types/react@18.2.61)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-OrVIOcZL0tl6xibeuGt5/+UxoT2N27KCFOPjFyfXMnchxSHZ/OW7cCX2nGlIYJrbHK/fczPcFzAwvNBB6XBNMA==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.24.0
+      '@radix-ui/primitive': 1.0.1
+      '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.2.61)(react@18.2.0)
+      '@radix-ui/react-context': 1.0.1(@types/react@18.2.61)(react@18.2.0)
+      '@radix-ui/react-dialog': 1.0.5(@types/react-dom@18.2.19)(@types/react@18.2.61)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.19)(@types/react@18.2.61)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-slot': 1.0.2(@types/react@18.2.61)(react@18.2.0)
       '@types/react': 18.2.61
       '@types/react-dom': 18.2.19
       react: 18.2.0
@@ -2889,6 +2924,17 @@ packages:
   /@ungap/structured-clone@1.2.0:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
     dev: true
+
+  /@uploadcare/upload-client@6.14.1:
+    resolution: {integrity: sha512-GvXLq6GGyXHjq7tebfv3IqHFpMzuOSuNPOhwCcNPquUbwoAlTEFPLjB2Ir/EZUuCtTWowluLjo4LPDQwvHbqyA==}
+    engines: {node: '>=16'}
+    dependencies:
+      form-data: 4.0.0
+      ws: 8.16.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
 
   /@vercel/blob@0.14.1:
     resolution: {integrity: sha512-pGdEbzZ6wKJf5tknzeHP6bpDAmWvJQc9IsT2fvmI2hSLG/ir0hLt0ABcYv7W1aMHnSo4VQlcjucKOPMsaePmBg==}
@@ -8532,6 +8578,16 @@ packages:
     dependencies:
       solid-js: 1.8.15
       swr-store: 0.10.6
+    dev: false
+
+  /sonner@1.4.3(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-SArYlHbkjqRuLiR0iGY2ZSr09oOrxw081ZZkQPfXrs8aZQLIBOLOdzTYxGJB5yIZ7qL56UEPmrX1YqbODwG0Lw==}
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /source-map-js@1.0.2:

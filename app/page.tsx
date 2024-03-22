@@ -12,18 +12,16 @@ import {
 } from "@/components/ui/card"
 import Navbar from '@/components/navbar'
 import AuthButton from '../components/AuthButton'
-import HeroSection from '@/components/herosection'
 import dashboard from '../public/dashboard.png'
-import Feature1 from '@/components/feature1'
+import { SpotlightPreview } from '@/components/spotlightpreview'
+import { MacbookScrollDemo } from '@/components/macbookscrolldemo'
 
 export default function Home() {
   
   return (
-    <main className="flex min-h flex-col items-center p-20 flex flex-col space-y-10">
-<Navbar />
-
-<HeroSection />
-<Feature1 />
+    <main className="bg-black/[0.96]">
+<SpotlightPreview />
+<MacbookScrollDemo />
     </main>
   )
 }

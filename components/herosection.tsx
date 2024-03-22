@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
   import Link from 'next/link';
   import Image from 'next/image'
   import dashboard from '../public/dashboard.png'
+  import openai from '../public/openai.svg'
 
 
   export default function HeroSection() {
@@ -18,31 +19,25 @@ import { Button } from "@/components/ui/button"
         <div className="relative isolate px-6 pt-14 lg:px-8">
 
           <div className="mx-auto max-w-6xl">
-            <div className="hidden sm:mb-8 sm:flex sm:justify-center">
-              <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
-              NEW! Ship winning creative with lightning-speed using Sprints⚡️{' '}
-                <a href="/sprints" className="font-semibold text-indigo-600">
-                  <span className="absolute inset-0" aria-hidden="true" />
-                  Learn more <span aria-hidden="true">&rarr;</span>
-                </a>
-              </div>
-            </div>
             <div className="text-center">
               <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-              The next generation winning ad workflow
+              The Next Generation Winning Ad Workflow
 
               </h1>
-              <p className="mt-6 text-xl leading-8 text-gray-600">
-              Beautiful creative reporting to help your team generate more revenue from your paid social ads
-
-
+              <p className="mt-6 text-xl leading-8 text-gray-600 inline-block">
+              <span>Rebase by Michael Todd Beauty is a generative AI video tool that repurposes your existing library of footage into direct response ads in one click.</span>
+              <span className="text-xl leading-8 text-gray-600"> Powered by <Image className="inline-block	"
+        src={openai}
+        alt="OpenAI Logo"
+      />
+      </span>
               </p>
               
               <div className="mt-10 flex items-center justify-center gap-x-6">
         <div className="flex w-full max-w-sm items-center space-x-2">
           <Input type="email" placeholder="Work Email" onChange={handleEmailChange} />
           <Button asChild className="h-10 px-4 py-2" type="submit">
-            <Link href={`/sign-up?email_address=${encodeURIComponent(email)}`}>Start</Link>
+            <Link href={`/sign-in?email_address=${encodeURIComponent(email)}`}>Start</Link>
           </Button>
         </div>
       </div>

@@ -1,9 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 ::selection {
     color: white;
     background: #1890FF;
+  }
+  .z-back {
+    z-index: -1;
   }
   
