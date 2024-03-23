@@ -18,6 +18,8 @@ import {
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu"
 import Navigation from "@/components/navigation"
+import logo from '../public/logo.svg'
+
 
 
 const Navbar = () => {
@@ -27,7 +29,7 @@ const Navbar = () => {
       
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <img src="https://try.michaeltoddbeauty.com/images/svg/logo.svg" className="h-8" alt="Michael Todd Beauty" />
+          <Image className="h-8" src={logo} alt="Michael Todd Beauty Logo"/>
         </a>
         <div className="flex md:order-2 space-x-6 md:space-x-6 rtl:space-x-reverse">
         <UserButton />

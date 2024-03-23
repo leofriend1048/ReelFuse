@@ -202,7 +202,7 @@ export default function Page({ params }: { params: { id: string } }) {
     <DialogHeader>
       <DialogTitle>Are you sure?</DialogTitle>
       <DialogDescription>
-      The team in Slack will be notified & a Clickup task with the "ready to launch" status will be created.
+      The team in Slack will be notified &amp; a Clickup task with the &quot;ready to launch&quot; status will be created.
         <div className="pt-4"><Button onClick={() => markReadyToLaunch(video.rendered_video, params.id)}>Continue</Button></div>
       </DialogDescription>
     </DialogHeader>

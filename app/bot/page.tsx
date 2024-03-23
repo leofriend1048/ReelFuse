@@ -22,7 +22,6 @@ import { fromUrlStatus } from '@uploadcare/upload-client'
 import { base } from '@uploadcare/upload-client'
 import Link from 'next/link';
 import { buttonVariants } from "@/components/ui/button"
-import { Loader2 } from "lucide-react"
 import { MultiStepLoader } from '@/components/ui/multi-step-loader';
 
 
@@ -66,7 +65,7 @@ export default function Chat() {
           setVideoData({ rendered_video: data[0].rendered_video, hookScriptCopy: data[0].hookScriptCopy, video_id: data[0].video_id });
         }
       } catch (error) {
-        console.error("Error fetching videos:", error.message);
+        console.error("Error fetching videos:");
       }
     };
 
@@ -211,8 +210,8 @@ try {
 
         const creatomateData = await creatomateResponse.json();
         // Ensure that url is defined in a scope accessible by the setTimeout callback
-        let url; // Declare url outside of the if block
-        let id; // Also declare id outside to ensure it's accessible
+        let url: string = "";
+        let id: string = "";
         
         // Assuming creatomateData is an array based on the given sample response
         if (creatomateData.length > 0) {
@@ -226,16 +225,20 @@ try {
 // Set a 30-second delay before uploading the URL to Uploadcare
 setTimeout(async () => {
   try {
-    // First, upload the URL to Uploadcare and retrieve the token from the response
-    const uploadResult = await fromUrl(url, {
-      publicKey: '4761755c61304c80768c',
-      metadata: {
-        subsystem: 'uploader',
-        pet: 'cat'
-      }
-    });
-
-    console.log("Upload initiated to Uploadcare. Token:", uploadResult.token);
+    if (url) {
+      // url is confirmed to be a string here, so this is safe
+      const uploadResult = await fromUrl(url, {
+        publicKey: '4761755c61304c80768c',
+        metadata: {
+          subsystem: 'uploader',
+          pet: 'cat'
+        }
+      });
+      // Rest of your logic...
+    } else {
+      // Handle the case where url is null, possibly with an error message or logging
+      console.error("URL is null, cannot proceed with upload");
+    }
 
     // Next, use the token to check the status of the upload
     const statusCheckInterval = setInterval(async () => {
@@ -263,7 +266,6 @@ setTimeout(async () => {
             setIsSubmitting(false); 
 
             console.log("Successfully inserted into Supabase:", supabaseData);
-            setIsSubmitting(false); // Indicate the submission process has ended
 
              // Refresh the page
   window.location.reload(); 
