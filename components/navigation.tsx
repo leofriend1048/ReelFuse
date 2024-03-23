@@ -19,13 +19,13 @@ const components: { title: string; href: string; description: string }[] = [
     title: "Rendered Videos",
     href: "/videos",
     description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
+      "All final videos",
   },
   {
     title: "Modular Content",
     href: "/library",
     description:
-      "For sighted users to preview content available behind a link.",
+      "All modular, unedited videos",
   },
 ]
 
