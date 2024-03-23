@@ -49,6 +49,7 @@ import {
     Download,
     Video,
     Pencil,
+    CircleEllipsis,
   } from "lucide-react"
   import {
     Alert,
@@ -65,6 +66,9 @@ import {
     DrawerTitle,
     DrawerTrigger,
   } from "@/components/ui/drawer"
+  import Image from "next/image";
+
+
   
   
 
@@ -152,7 +156,8 @@ export default function Page({ params }: { params: { id: string } }) {
            <b>Prompt:</b>
            <DropdownMenu>
      <DropdownMenuTrigger asChild>
-       <Button className="h-8 w-8 px-0" variant="outline" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></Button>
+       <Button className="h-8 w-8 px-0" variant="outline" >
+       <CircleEllipsis size={16} /></Button>
      </DropdownMenuTrigger>
      <DropdownMenuContent className="w-96">
        <DropdownMenuGroup>

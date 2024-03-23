@@ -235,13 +235,13 @@ setTimeout(async () => {
       }
     });
 
-    console.log("Upload initiated to Uploadcare. Token:", uploadResult.token);
+    console.log("Upload initiated to Uploadcare. Token:", (uploadResult as any).token);
 
 
     // Next, use the token to check the status of the upload
     const statusCheckInterval = setInterval(async () => {
       try {
-        const result = await fromUrlStatus(uploadResult.token, {
+        const result = await fromUrlStatus((uploadResult as any).token, {
           publicKey: '4761755c61304c80768c'
         });
 
@@ -269,13 +269,13 @@ setTimeout(async () => {
   window.location.reload(); 
   
 } catch (error) {
-  console.error("Failed to insert into Supabase:", error.message);
+  console.error("Failed to insert into Supabase:", error);
 } 
 
           // Once the upload is confirmed, clear the interval to stop checking
           clearInterval(statusCheckInterval);
         } else if (result.status === "error") {
-          console.error("Upload to Uploadcare failed. Error:", result.error, "HTTP client error:", result.httpErrorCode);
+          console.error("Upload to Uploadcare failed. Error:", result.error, "HTTP client error:", result);
           clearInterval(statusCheckInterval);
         }
         // If status is "waiting" or "unknown", the interval will continue until success or error
@@ -314,7 +314,8 @@ console.error("Error parsing response data or other processing error:", error);
           <div className="p-4 flex items-center justify-center md:p-10 dark:border-gray-800">
             <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
               <div className="flex w-full fixed bottom-0 items-center space-x-2 max-w-md p-2 mb-8">
-                <Form {...form} className="flex w-full fixed bottom-0 items-center space-x-2 max-w-md p-2 mb-8">
+                <div className="flex w-full fixed bottom-0 items-center space-x-2 max-w-md p-2 mb-8">
+                <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full space-y-6">
                     <FormField
                       control={form.control}
@@ -338,6 +339,7 @@ console.error("Error parsing response data or other processing error:", error);
 
                   </form>
                 </Form>
+                </div>
               </div>
             </div>
           </div>

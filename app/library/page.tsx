@@ -52,7 +52,7 @@ export default function Chat() {
           setIsLoading(false); // Stop loading after data is fetched
         }
       } catch (error) {
-        console.error("Error fetching videos:", error.message);
+        console.error("Error fetching videos:", error);
         setIsLoading(false); // Stop loading on error
       }
     };

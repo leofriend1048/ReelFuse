@@ -14,14 +14,12 @@ import Navbar from '@/components/navbar'
 import AuthButton from '../components/AuthButton'
 import dashboard from '../public/dashboard.png'
 import { SpotlightPreview } from '@/components/spotlightpreview'
-import { MacbookScrollDemo } from '@/components/macbookscrolldemo'
 
 export default function Home() {
   
   return (
-    <main className="bg-black/[0.96]">
+    <main className="bg-black h-max">
 <SpotlightPreview />
-<MacbookScrollDemo />
     </main>
   )
 }

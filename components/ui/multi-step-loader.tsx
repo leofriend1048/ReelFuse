@@ -96,11 +96,13 @@ export const MultiStepLoader = ({
   loading,
   duration = 2000,
   loop = true,
+  className, // Destructure className from props
 }: {
   loadingStates: LoadingState[];
   loading?: boolean;
   duration?: number;
   loop?: boolean;
+  className?: string; // Add this line to include className in the prop types
 }) => {
   const [currentState, setCurrentState] = useState(0);
 
