@@ -27,6 +27,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton"
 
 
+
+
 export default function Chat() {
   const [videoData, setVideoData] = useState<
   Array<{ rendered_video: string; hookScriptCopy: string; video_id: string }>
@@ -59,7 +61,6 @@ export default function Chat() {
   
     getVideos();
   }, []);
-  
 
 
   if (isLoading) {

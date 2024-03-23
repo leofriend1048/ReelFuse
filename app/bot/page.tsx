@@ -28,6 +28,7 @@ import { MultiStepLoader } from '@/components/ui/multi-step-loader';
 
 
 
+
 const FormSchema = z.object({
   prompt: z.string().min(2, {
     message: "Prompt st be at least 2 characters.",
@@ -225,20 +226,17 @@ try {
 // Set a 30-second delay before uploading the URL to Uploadcare
 setTimeout(async () => {
   try {
-    if (url) {
-      // url is confirmed to be a string here, so this is safe
-      const uploadResult = await fromUrl(url, {
-        publicKey: '4761755c61304c80768c',
-        metadata: {
-          subsystem: 'uploader',
-          pet: 'cat'
-        }
-      });
-      // Rest of your logic...
-    } else {
-      // Handle the case where url is null, possibly with an error message or logging
-      console.error("URL is null, cannot proceed with upload");
-    }
+    // First, upload the URL to Uploadcare and retrieve the token from the response
+    const uploadResult = await fromUrl(url, {
+      publicKey: '4761755c61304c80768c',
+      metadata: {
+        subsystem: 'uploader',
+        pet: 'cat'
+      }
+    });
+
+    console.log("Upload initiated to Uploadcare. Token:", uploadResult.token);
+
 
     // Next, use the token to check the status of the upload
     const statusCheckInterval = setInterval(async () => {

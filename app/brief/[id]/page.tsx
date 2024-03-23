@@ -66,10 +66,7 @@ import {
     DrawerTrigger,
   } from "@/components/ui/drawer"
   
-
   
-
-
 
 // Assuming params is received correctly; otherwise, use useRouter to obtain params
 export default function Page({ params }: { params: { id: string } }) {
