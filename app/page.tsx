@@ -14,11 +14,12 @@ import Navbar from '@/components/navbar'
 import dashboard from '../public/dashboard.png'
 import { SpotlightPreview } from '@/components/spotlightpreview'
 
-export default function Home() {
-  
+
+export default function Home() {  
   return (
     <main className="bg-black min-h-screen">
 <SpotlightPreview />
+
     </main>
   )
 }
