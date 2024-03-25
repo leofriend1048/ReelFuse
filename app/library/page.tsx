@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/navbar';
 import { Button } from '@/components/ui/button';
-import { createClient } from '@/utils/supabase/client';
 import { fromUrl } from '@uploadcare/upload-client'
 import { fromUrlStatus } from '@uploadcare/upload-client'
 import { base } from '@uploadcare/upload-client'
