@@ -24,7 +24,7 @@ import Link from 'next/link';
 import { buttonVariants } from "@/components/ui/button"
 import { MultiStepLoader } from '@/components/ui/multi-step-loader';
 
-import { supabase } from '@/utils/supabase/client'
+import { createClient } from '@/utils/supabase/client'
 import { Redirect } from 'next';
 
 

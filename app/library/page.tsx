@@ -25,7 +25,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input';
 
-import { supabase } from '@/utils/supabase/client'
+import { createClient } from '@/utils/supabase/client'
 import { Redirect } from 'next';
 
 

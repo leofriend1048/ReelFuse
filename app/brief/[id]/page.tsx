@@ -67,8 +67,8 @@ import {
     DrawerTrigger,
   } from "@/components/ui/drawer"
   import Image from "next/image";
-  import { supabase } from '@/utils/supabase/client'
-import { Redirect } from 'next';
+  import { createClient } from '@/utils/supabase/client'
+  import { Redirect } from 'next';
 
 
   

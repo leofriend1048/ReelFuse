@@ -26,7 +26,7 @@ import { Loader2 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 
-import { supabase } from '@/utils/supabase/client'
+import { createClient } from '@/utils/supabase/client'
 import { Redirect } from 'next';
 
 
