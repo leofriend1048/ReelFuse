@@ -24,7 +24,8 @@ import Link from 'next/link';
 import { buttonVariants } from "@/components/ui/button"
 import { MultiStepLoader } from '@/components/ui/multi-step-loader';
 
-
+import { supabase } from '@/utils/supabase/client'
+import { Redirect } from 'next';
 
 
 
@@ -36,6 +37,23 @@ const FormSchema = z.object({
 });
 
 export default function Chat() {
+
+  const supabase = createClient();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error || !data?.user) {
+        // Redirect to sign-in page using window.location for a full reload
+        window.location.href = '/sign-in';
+      }
+    };
+
+    checkUser();
+  }, []); // Empty dependency array means this runs once on component mount
+
+  
   const [videoData, setVideoData] = useState<{ rendered_video: string; hookScriptCopy: string; video_id: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false); // Declare the isSubmitting state here
   const loadingStates = [
@@ -46,7 +64,6 @@ export default function Chat() {
     { text: "Finalizing..." },
   ];
 
-  const supabase = createClient();
 
   useEffect(() => {
     const getMostRecentVideo = async () => {

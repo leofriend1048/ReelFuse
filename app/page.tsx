@@ -11,14 +11,13 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import Navbar from '@/components/navbar'
-import AuthButton from '../components/AuthButton'
 import dashboard from '../public/dashboard.png'
 import { SpotlightPreview } from '@/components/spotlightpreview'
 
 export default function Home() {
   
   return (
-    <main className="bg-black h-max">
+    <main className="bg-black min-h-screen">
 <SpotlightPreview />
     </main>
   )

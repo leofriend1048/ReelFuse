@@ -26,6 +26,8 @@ import { Loader2 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 
+import { supabase } from '@/utils/supabase/client'
+import { Redirect } from 'next';
 
 
 
@@ -35,6 +37,19 @@ export default function Chat() {
 >([]);
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const supabase = createClient();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error || !data?.user) {
+        // Redirect to sign-in page using window.location for a full reload
+        window.location.href = '/sign-in';
+      }
+    };
+
+    checkUser();
+  }, []); // Empty dependency array means this runs once on component mount
 
   useEffect(() => {
     const getVideos = async () => {

@@ -3,10 +3,6 @@ import Link from 'next/link';
 import Image from 'next/image'
 import { buttonVariants } from "@/components/ui/button"
 import { Button } from "@/components/ui/button"
-import AuthButton from '../components/AuthButton'
-import { UserButton } from "@clerk/nextjs";
-import { OrganizationSwitcher } from "@clerk/nextjs"; 
-import { SignInButton } from "@clerk/nextjs";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -34,8 +30,6 @@ const Navbar = () => {
 
         </a>
         <div className="flex md:order-2 space-x-6 md:space-x-6 rtl:space-x-reverse">
-        <UserButton />
-    <OrganizationSwitcher hidePersonal={true} />
         </div>
         <div
           className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"

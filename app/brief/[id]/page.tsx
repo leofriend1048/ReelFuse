@@ -67,6 +67,8 @@ import {
     DrawerTrigger,
   } from "@/components/ui/drawer"
   import Image from "next/image";
+  import { supabase } from '@/utils/supabase/client'
+import { Redirect } from 'next';
 
 
   
@@ -77,6 +79,19 @@ export default function Page({ params }: { params: { id: string } }) {
     const [videos, setVideos] = useState<any[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     const supabase = createClient();
+
+    useEffect(() => {
+        const checkUser = async () => {
+          const { data, error } = await supabase.auth.getUser();
+    
+          if (error || !data?.user) {
+            // Redirect to sign-in page using window.location for a full reload
+            window.location.href = '/sign-in';
+          }
+        };
+    
+        checkUser();
+      }, []); // Empty dependency array means this runs once on component mount
 
     useEffect(() => {
         const getData = async () => {
