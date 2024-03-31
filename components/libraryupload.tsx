@@ -50,8 +50,8 @@ const LibraryUpload = () => {
 
     const fileRef = form.register('file', { required: true });
 
-    const uploadFile = async (file, clipDescription) => {
-        const fileExtension = file.name.split('.').pop();
+    const uploadFile = async (file: File, clipDescription: string) => {
+      const fileExtension = file.name.split('.').pop();
         const filePath = `${Date.now()}.${fileExtension}`;
         console.log('File path:', filePath);
         const { error: uploadError } = await supabase.storage.from('modular_clips').upload(filePath, file);
