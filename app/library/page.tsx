@@ -26,7 +26,7 @@ import { Input } from '@/components/ui/input';
 
 import { createClient } from '@/utils/supabase/client'
 import { Redirect } from 'next';
-
+import LibraryUpload from '@/components/libraryupload';
 
 
 export default function Chat() {
@@ -102,7 +102,10 @@ export default function Chat() {
     <section className="flex flex-col items-center p-20 space-y-10">
       <Navbar />
       <CardTitle>Modular Video Library</CardTitle>
-      <div className="flex flex-row flex-wrap justify-center">
+
+     <LibraryUpload />
+
+    <div className="flex flex-row flex-wrap justify-center">
         {videoData.map((video, index) => (
           <Card key={index} className="rounded-lg shadow-lg max-w-xs mx-auto hover:shadow-xl transition-all duration-200 m-4">
             <div className="flex justify-center">
@@ -113,9 +116,6 @@ export default function Chat() {
             </div>
             <CardContent className="p-4 space-y-4">
            
-
-
-
             <Sheet>
                 <SheetTrigger>
                   <Button variant="outline" size="icon">
@@ -126,15 +126,12 @@ export default function Chat() {
                   <SheetHeader>
                     <CardTitle>Edit Details</CardTitle>
                     <div className="grid w-full gap-1.5 pt-8">
-                                            {/* Modification: placeholder set to video.description */}
       <Label htmlFor="message">Description of clip</Label>
       <Textarea placeholder={video.description}id="message" />
     </div>
-    <div className="grid w-full max-w-sm items-center gap-1.5 pt-4 pb-4">
-      <Label htmlFor="video">Video</Label>
-      <Input id="video" type="file" />
-    </div>
+   <div className="pt-4 w-full">
                       <Button type="submit">Save Changes</Button>
+                      </div>
                   </SheetHeader>
                 </SheetContent>
               </Sheet>
