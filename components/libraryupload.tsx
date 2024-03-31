@@ -75,7 +75,7 @@ const LibraryUpload = () => {
           }
       };
 
-    const onSubmit = async (values) => {
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             const files = values.file;
             if (files && files.length > 0) {
