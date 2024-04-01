@@ -20,7 +20,7 @@ export function SpotlightPreview() {
         The Next Generation Winning Ad Workflow
         </h1>
         <p className="mt-6 text-xl leading-8 text-neutral-300 inline-block text-center">
-              <span>Rebase by Michael Todd Beauty is a generative AI video tool that repurposes your existing library of footage into direct response ads in one click.</span>
+              <span>Reel Fuse is a generative AI video tool that repurposes your existing library of footage into direct response ads in one click.</span>
               <span className="text-xl leading-8 text-neutral-300"> Powered by <Image className="inline-block" src={openaiwhite} alt="OpenAI Logo"/> </span>
         </p>
         <div className="flex justify-center pt-8">
