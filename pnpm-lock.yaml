@@ -25,6 +25,9 @@ dependencies:
   '@radix-ui/react-aspect-ratio':
     specifier: ^1.0.3
     version: 1.0.3(@types/react-dom@18.2.19)(@types/react@18.2.61)(react-dom@18.2.0)(react@18.2.0)
+  '@radix-ui/react-avatar':
+    specifier: ^1.0.4
+    version: 1.0.4(@types/react-dom@18.2.19)(@types/react@18.2.61)(react-dom@18.2.0)(react@18.2.0)
   '@radix-ui/react-checkbox':
     specifier: ^1.0.4
     version: 1.0.4(@types/react-dom@18.2.19)(@types/react@18.2.61)(react-dom@18.2.0)(react@18.2.0)
@@ -76,17 +79,26 @@ dependencies:
   '@supabase/auth-helpers-nextjs':
     specifier: ^0.8.7
     version: 0.8.7(@supabase/supabase-js@2.39.7)
+  '@supabase/auth-ui-react':
+    specifier: ^0.4.7
+    version: 0.4.7(@supabase/supabase-js@2.39.7)
+  '@supabase/auth-ui-shared':
+    specifier: ^0.1.8
+    version: 0.1.8(@supabase/supabase-js@2.39.7)
   '@supabase/ssr':
     specifier: ^0.0.10
     version: 0.0.10(@supabase/supabase-js@2.39.7)
   '@supabase/supabase-js':
     specifier: ^2.39.7
     version: 2.39.7
+  '@tabler/icons-react':
+    specifier: ^3.1.0
+    version: 3.1.0(react@18.2.0)
   '@tanstack/react-table':
     specifier: ^8.10.7
     version: 8.13.2(react-dom@18.2.0)(react@18.2.0)
   '@tremor/react':
-    specifier: ^3.13.3
+    specifier: ^3.14.1
     version: 3.14.1(react-dom@18.2.0)(react@18.2.0)(tailwindcss@3.4.1)
   '@uploadcare/upload-client':
     specifier: ^6.14.1
@@ -119,7 +131,7 @@ dependencies:
     specifier: ^4.18.2
     version: 4.18.3
   framer-motion:
-    specifier: ^10.16.5
+    specifier: ^10.18.0
     version: 10.18.0(react-dom@18.2.0)(react@18.2.0)
   lucide-react:
     specifier: ^0.292.0
@@ -149,7 +161,7 @@ dependencies:
     specifier: ^5.2.0
     version: 5.2.0(chart.js@4.4.2)(react@18.2.0)
   react-day-picker:
-    specifier: ^8.9.1
+    specifier: ^8.10.0
     version: 8.10.0(date-fns@2.30.0)(react@18.2.0)
   react-dom:
     specifier: ^18.2.0
@@ -164,8 +176,8 @@ dependencies:
     specifier: ^1.4.3
     version: 1.4.3(react-dom@18.2.0)(react@18.2.0)
   tailwind-merge:
-    specifier: ^2.2.1
-    version: 2.2.1
+    specifier: ^2.2.2
+    version: 2.2.2
   tailwindcss-animate:
     specifier: ^1.0.7
     version: 1.0.7(tailwindcss@3.4.1)
@@ -1201,6 +1213,30 @@ packages:
     dependencies:
       '@babel/runtime': 7.24.0
       '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.19)(@types/react@18.2.61)(react-dom@18.2.0)(react@18.2.0)
+      '@types/react': 18.2.61
+      '@types/react-dom': 18.2.19
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@radix-ui/react-avatar@1.0.4(@types/react-dom@18.2.19)(@types/react@18.2.61)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-kVK2K7ZD3wwj3qhle0ElXhOjbezIgyl2hVvgwfIdexL3rN6zJmy5AqqIf+D31lxVppdzV8CjAfZ6PklkmInZLw==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.24.0
+      '@radix-ui/react-context': 1.0.1(@types/react@18.2.61)(react@18.2.0)
+      '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.19)(@types/react@18.2.61)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-use-callback-ref': 1.0.1(@types/react@18.2.61)(react@18.2.0)
+      '@radix-ui/react-use-layout-effect': 1.0.1(@types/react@18.2.61)(react@18.2.0)
       '@types/react': 18.2.61
       '@types/react-dom': 18.2.19
       react: 18.2.0
@@ -2399,6 +2435,10 @@ packages:
       '@sinonjs/commons': 3.0.1
     dev: false
 
+  /@stitches/core@1.2.8:
+    resolution: {integrity: sha512-Gfkvwk9o9kE9r9XNBmJRfV8zONvXThnm1tcuojL04Uy5uRyqg93DC83lDebl0rocZCfKSjUv+fWYtMQmEDJldg==}
+    dev: false
+
   /@supabase/auth-helpers-nextjs@0.8.7(@supabase/supabase-js@2.39.7):
     resolution: {integrity: sha512-iYdOjFo0GkRvha340l8JdCiBiyXQuG9v8jnq7qMJ/2fakrskRgHTCOt7ryWbip1T6BExcWKC8SoJrhCzPOxhhg==}
     peerDependencies:
@@ -2416,6 +2456,27 @@ packages:
     dependencies:
       '@supabase/supabase-js': 2.39.7
       jose: 4.15.4
+    dev: false
+
+  /@supabase/auth-ui-react@0.4.7(@supabase/supabase-js@2.39.7):
+    resolution: {integrity: sha512-Lp4FQGFh7BMX1Y/BFaUKidbryL7eskj1fl6Lby7BeHrTctbdvDbCMjVKS8wZ2rxuI8FtPS2iU900fSb70FHknQ==}
+    peerDependencies:
+      '@supabase/supabase-js': ^2.21.0
+    dependencies:
+      '@stitches/core': 1.2.8
+      '@supabase/auth-ui-shared': 0.1.8(@supabase/supabase-js@2.39.7)
+      '@supabase/supabase-js': 2.39.7
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@supabase/auth-ui-shared@0.1.8(@supabase/supabase-js@2.39.7):
+    resolution: {integrity: sha512-ouQ0DjKcEFg+0gZigFIEgu01V3e6riGZPzgVD0MJsCBNsMsiDT74+GgCEIElMUpTGkwSja3xLwdFRFgMNFKcjg==}
+    peerDependencies:
+      '@supabase/supabase-js': ^2.21.0
+    dependencies:
+      '@supabase/supabase-js': 2.39.7
     dev: false
 
   /@supabase/functions-js@2.1.5:
@@ -2489,6 +2550,19 @@ packages:
     resolution: {integrity: sha512-E4KcWTpoLHqwPHLxidpOqQbcrZVgi0rsmmZXUle1jXmJfuIf/UWpczUJ7MZZ5tlxytgJXyp0w4PGkkeLiuIdZw==}
     dependencies:
       tslib: 2.6.2
+    dev: false
+
+  /@tabler/icons-react@3.1.0(react@18.2.0):
+    resolution: {integrity: sha512-k/WTlax2vbj/LpxvaJ+BmaLAAhVUgyLj4Ftgaczz66tUSNzqrAZXCFdOU7cRMYPNVBqyqE2IdQd2rzzhDEJvkw==}
+    peerDependencies:
+      react: '>= 16'
+    dependencies:
+      '@tabler/icons': 3.1.0
+      react: 18.2.0
+    dev: false
+
+  /@tabler/icons@3.1.0:
+    resolution: {integrity: sha512-CpZGyS1IVJKFcv88yZ2sYZIpWWhQ6oy76BQKQ5SF0fGgOqgyqKdBGG/YGyyMW632on37MX7VqQIMTzN/uQqmFg==}
     dev: false
 
   /@tailwindcss/forms@0.5.7(tailwindcss@3.4.1):
@@ -8908,8 +8982,8 @@ packages:
     resolution: {integrity: sha512-3mFKyCo/MBcgyOTlrY8T7odzZFx+w+qKSMAmdFzRvqBfLlSigU6TZnlFHK0lkMwj9Bj8OYU+9yW9lmGuS0QEnQ==}
     dev: false
 
-  /tailwind-merge@2.2.1:
-    resolution: {integrity: sha512-o+2GTLkthfa5YUt4JxPfzMIpQzZ3adD1vLVkvKE1Twl9UAhGsEbIZhHHZVRttyW177S8PDJI3bTQNaebyofK3Q==}
+  /tailwind-merge@2.2.2:
+    resolution: {integrity: sha512-tWANXsnmJzgw6mQ07nE3aCDkCK4QdT3ThPMCzawoYA2Pws7vSTCvz3Vrjg61jVUGfFZPJzxEP+NimbcW+EdaDw==}
     dependencies:
       '@babel/runtime': 7.24.0
     dev: false

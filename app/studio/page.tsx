@@ -1,8 +1,52 @@
 'use client';
-
+import {
+    Bird,
+    Book,
+    Bot,
+    Code2,
+    CornerDownLeft,
+    LifeBuoy,
+    Mic,
+    Paperclip,
+    Rabbit,
+    Settings,
+    Settings2,
+    Share,
+    Triangle,
+    Turtle,
+    Info,
+  } from "lucide-react"
+  import { Badge } from "@/components/ui/badge"
+  import { Button } from "@/components/ui/button"
+  import { Label } from "@/components/ui/label"
+  import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
+  import { Textarea } from "@/components/ui/textarea"
+  import {
+    Tooltip,
+    TooltipProvider,
+    TooltipContent,
+    TooltipTrigger,
+  } from "@/components/ui/tooltip"
+  import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+  } from "@/components/ui/dropdown-menu"
+  import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+  import { Separator } from "@/components/ui/separator"
+  import logo from '/public/logo.svg'
+import Image from "next/image"
+import Navbar from "@/components/navbar"
 import React, { useEffect, useState } from 'react';
-import Navbar from '@/components/navbar';
-import { Button } from '@/components/ui/button';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,13 +63,20 @@ import { Input } from "@/components/ui/input";
 import Link from 'next/link';
 import { buttonVariants } from "@/components/ui/button"
 import { MultiStepLoader } from '@/components/ui/multi-step-loader';
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+
 
 import { createClient } from '@/utils/supabase/client'
 import { Redirect } from 'next';
-
-
-
-
 
 const FormSchema = z.object({
   prompt: z.string().min(2, {
@@ -34,7 +85,6 @@ const FormSchema = z.object({
 });
 
 export default function Chat() {
-
   const supabase = createClient();
 
   useEffect(() => {
@@ -52,7 +102,8 @@ export default function Chat() {
 
   
   const [videoData, setVideoData] = useState<{ rendered_video: string; hookScriptCopy: string; video_id: string } | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false); // Declare the isSubmitting state here
+  const [isSubmitting, setIsSubmitting] = useState(false); 
+  const [RenderDone, setRenderDone] = useState(false);
   const loadingStates = [
     { text: "Researching the Sonicsmooth ad angle..." },
     { text: "Writing your direct response ad script ..." },
@@ -94,7 +145,6 @@ export default function Chat() {
     },
   });
 
-  
   async function fetchChatResponse(data: z.infer<typeof FormSchema>) {
     const response = await fetch('https://api.airops.com/public_api/agent_apps/af35fbef-2892-4416-a1e7-94011a6a4066/chat/v10', {
       method: 'POST',
@@ -370,24 +420,372 @@ export default function Chat() {
     }
   }
 
+
   return (
-    <section>
-      <Navbar />
-      <div className="w-full grid grid-cols-1 md:grid-cols-2">
-        <div className="grid gap-4 p-4 md:gap-8 md:p-8">
-          <div className="p-4 flex items-center justify-center md:p-10 dark:border-gray-800">
-            <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
-              <div className="flex w-full fixed bottom-0 items-center space-x-2 max-w-md p-2 mb-8">
-                <div className="flex w-full fixed bottom-0 items-center space-x-2 max-w-md p-2 mb-8">
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full space-y-6">
+    <div className="grid  w-full pl-[56px]">
+    <aside className="inset-y fixed  left-0 z-20 flex h-full flex-col border-r">
+      <div className="p-2 border-b min-h-16">
+        <Button variant="outline" size="icon" aria-label="Home">
+          <Triangle className="size-5 fill-foreground" />
+        </Button>
+      </div>
+      <nav className="grid gap-1 p-2">
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-lg"
+              aria-label="Models"
+            >
+              <Bot className="size-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right" sideOffset={5}>
+            Models
+          </TooltipContent>
+        </Tooltip>
+        </TooltipProvider>
+        <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-lg"
+              aria-label="Models"
+            >
+              <Bot className="size-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right" sideOffset={5}>
+            Models
+          </TooltipContent>
+        </Tooltip>
+        </TooltipProvider>
+        <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-lg"
+              aria-label="API"
+            >
+              <Code2 className="size-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right" sideOffset={5}>
+            API
+          </TooltipContent>
+        </Tooltip>
+        </TooltipProvider>
+        <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-lg"
+              aria-label="Documentation"
+            >
+              <Book className="size-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right" sideOffset={5}>
+            Documentation
+          </TooltipContent>
+        </Tooltip>
+        </TooltipProvider>
+        <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-lg"
+              aria-label="Settings"
+            >
+              <Settings2 className="size-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right" sideOffset={5}>
+            Settings
+          </TooltipContent>
+        </Tooltip>
+        </TooltipProvider>
+      </nav>
+      <nav className="mt-auto grid gap-1 p-2 justify-items-center pb-8">
+        <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="mt-auto rounded-lg"
+              aria-label="Help"
+            >
+              
+              <LifeBuoy className="size-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right" sideOffset={5}>
+            Help
+          </TooltipContent>
+        </Tooltip>
+        </TooltipProvider>
+        <DropdownMenu>
+      <DropdownMenuTrigger>
+        <Avatar className="max-w-8 h-auto">
+      <AvatarImage src="https://avatars.githubusercontent.com/u/75441114?v=4" />
+      <AvatarFallback>LF</AvatarFallback>
+    </Avatar>
+    </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>
+          <div className="flex flex-col space-y-1 leading-none">
+            <p className="text-base font-medium">Leo Friend</p>
+            <p className="w-[200px] truncate text-sm text-slate-500 font-normal">leofriend1048@gmail.com</p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Dashboard</DropdownMenuItem>
+        <DropdownMenuItem>Billing</DropdownMenuItem>
+        <DropdownMenuItem>Account</DropdownMenuItem>
+        <Separator />
+        <DropdownMenuItem>Sign Out</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+      </nav>
+    </aside>
+    <div className="flex flex-col">
+      <header className="sticky top-0 z-0 flex h-[64px] items-center gap-1 border-b bg-background px-4">
+        <h1 className="text-xl font-semibold">Studio</h1>
+        <Button
+          variant="outline"
+          size="sm"
+          className="ml-auto gap-1.5 text-sm"
+        >
+          <Share className="size-3.5" />
+          Share
+        </Button>
+      </header>
+      <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="relative hidden flex-col items-start gap-8 md:flex">
+          <form className="grid w-full items-start gap-6">
+            <fieldset className="grid gap-6 rounded-lg border p-4 bg-white">
+              <legend className="-ml-1 px-1 text-sm font-medium">
+                Settings
+              </legend>
+              <div className="grid gap-3">
+                <Label className="flex flex-row items-center" htmlFor="framework">Framework<Drawer>
+  <DrawerTrigger className="pl-2"><Info size={16}/></DrawerTrigger>
+  <DrawerContent>
+  <DrawerHeader>
+      <DrawerTitle>Framework Library</DrawerTitle>
+      <DrawerDescription>Learn more about available creative frameworks</DrawerDescription>
+    </DrawerHeader>
+
+<div className="flex flex-row">
+<div className="w-2/3 w-full flex flex-row max-h-12 box-border">
+  <div className="bg-[#e2ff83] flex items-center p-4 w-fit text-center text-xs">Hook</div>
+  <div className="bg-[#e2ff83] flex items-center p-4 w-fit text-center text-xs shadow-[-2px_3px_11px_rgba(0,0,0,.15)]">Product Intro</div>
+  <div className="bg-[#e2ff83] flex items-center p-4 w-fit text-center text-xs shadow-[-2px_3px_11px_rgba(0,0,0,.15)]">Authority</div>
+  <div className="bg-[#e2ff83] flex items-center p-4 w-fit text-center text-xs shadow-[-2px_3px_11px_rgba(0,0,0,.15)]">Social Proof</div>
+  <div className="bg-[#e2ff83] flex items-center p-4 w-fit text-center text-xs shadow-[-2px_3px_11px_rgba(0,0,0,.15)]">Benefits</div>
+  <div className="bg-[#e2ff83] flex items-center p-4 w-fit text-center text-xs shadow-[-2px_3px_11px_rgba(0,0,0,.15)]">Features & USPs</div>
+  <div className="bg-[#e2ff83] flex items-center p-4 w-fit text-center text-xs shadow-[-2px_3px_11px_rgba(0,0,0,.15)]">CTA</div>
+</div>
+<div className="w-1/3">
+
+{videoData && (
+    <>
+      <video className="z-[-1]" width="300px" height="auto" controls preload="auto">
+        <source src={videoData.rendered_video} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </>
+  )}
+
+</div>
+</div>
+
+
+    
+    <DrawerFooter>
+      <DrawerClose>
+        <Button variant="outline">Close</Button>
+      </DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer></Label>
+                
+
+                <Select>
+                  <SelectTrigger
+                    id="framework"
+                    className="items-start [&_[data-description]]:hidden"
+                  >
+                    <SelectValue placeholder="Select a framework" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem className="min-h-10" value="problem-solution">
+                            Problem & Solution
+                    </SelectItem>
+                    <SelectItem className="min-h-10" value="genesis">
+                            Neural Genesis
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+
+
+                <Label className="flex flex-row items-center pt-2" htmlFor="framework">Product</Label>
+                
+
+                <Select>
+                  <SelectTrigger
+                    id="product"
+                    className="items-start [&_[data-description]]:hidden"
+                  >
+                    <SelectValue placeholder="Select a product" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem className="min-h-10" value="sonicsmooth">
+                            Sonicsmooth
+                    </SelectItem>
+                    <SelectItem className="min-h-10" value="knuduo">
+                            Knú Ageless Duo
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+
+              </div>
+           
+            </fieldset>
+            <fieldset className="grid gap-6 rounded-lg border p-4 bg-white">
+              <legend className="-ml-1 px-1 text-sm font-medium">
+                Audience
+              </legend>
+                  <div className="grid gap-3">
+                  <Label className="flex flex-row items-center" htmlFor="target-customer">GET: Target Customer</Label>
+                <Select>
+                  <SelectTrigger
+                    id="product"
+                    className="items-start [&_[data-description]]:hidden"
+                  >
+                    <SelectValue placeholder="Select a target customer" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem className="min-h-10" value="sonicsmooth">
+                            Women over 50
+                    </SelectItem>
+                    <SelectItem className="min-h-10" value="knuduo">
+                            Women going to the spa
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                  </div>
+                  <div className="grid gap-3">
+                  <Label className="flex flex-row items-center" htmlFor="surface-problem">WHO: Surface Problem</Label>
+                <Select>
+                  <SelectTrigger
+                    id="product"
+                    className="items-start [&_[data-description]]:hidden"
+                  >
+                    <SelectValue placeholder="Select a surface problem" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem className="min-h-10" value="sonicsmooth">
+                    Experiencing signs of aging and unwanted peach fuzz
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                  </div>
+                  
+                  <div className="grid gap-3">
+                  <Label className="flex flex-row items-center" htmlFor="target-customer">TO: Desired Outcome</Label>
+                <Select>
+                  <SelectTrigger
+                    id="product"
+                    className="items-start [&_[data-description]]:hidden"
+                  >
+                    <SelectValue placeholder="Select a target customer" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem className="min-h-10" value="sonicsmooth">
+                            Women over 50
+                    </SelectItem>
+                    <SelectItem className="min-h-10" value="knuduo">
+                            Women going to the spa
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                  </div>
+                  <div className="grid gap-3">
+                  <Label className="flex flex-row items-center" htmlFor="surface-problem">BY: USP, Value Prop, Unique Mechanism</Label>
+                <Select>
+                  <SelectTrigger
+                    id="product"
+                    className="items-start [&_[data-description]]:hidden"
+                  >
+                    <SelectValue placeholder="Select a surface problem" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem className="min-h-10" value="sonicsmooth">
+                    Experiencing signs of aging and unwanted peach fuzz
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                  </div>
+                  
+               
+            </fieldset>
+          </form>
+        </div>
+        <div className="relative flex flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
+          <Badge variant="outline" className="absolute right-3 top-3">
+            Output
+          </Badge>
+
+
+
+{RenderDone ? (
+  <div className="grid gap-4 p-4 md:gap-8 md:p-8 justify-center">
+    <div className="p-4 flex items-center justify-center md:p-10">
+      {videoData && (
+        <>
+          <video className="z-[-1]" width="350px" height="auto" controls preload="auto">
+            <source src={videoData.rendered_video} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </>
+      )}
+    </div>
+    {videoData && (
+      <>
+        <Button className="w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-x text-base" asChild>
+          <Link href={`/brief/${videoData.video_id}`}>See more</Link>
+        </Button>
+      </>
+    )}
+  </div>
+) : (
+  <div className="min-h-[650px]"></div>
+)}
+
+
+          
+
+          <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring bg-white">
                     <FormField
                       control={form.control}
                       name="prompt"
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
-                            <Input className="fixed bottom-14 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl text-base" placeholder="Input ad angle" {...field} />
+                            <Textarea id="message" placeholder="Input ad angle..." className="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -396,43 +794,33 @@ export default function Chat() {
                     {isSubmitting ? (
   <MultiStepLoader className="z-10" loadingStates={loadingStates} loading={isSubmitting} duration={40000} />
 ) : (
-  <Button className="fixed bottom-5 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-x text-base" type="submit">
-    Submit
-  </Button>
+  <div className="flex items-center p-3 pt-0">
+    <Button type="submit" size="sm" className="ml-auto gap-1.5 text-base">
+  Submit
+  <CornerDownLeft className="size-3.5" />
+</Button>
+</div>
 )}
+
 
                   </form>
                 </Form>
-                </div>
-              </div>
-            </div>
-          </div>
+
+
+
+
+
+
+
+
+
+
+
+
         </div>
-        
-        <div className="grid gap-4 p-4 md:gap-8 md:p-8 justify-center	">
-        <div className="p-4 flex items-center justify-center md:p-10">
-  {videoData && (
-    <>
-      <video className="z-[-1]" width="350px" height="auto" controls preload="auto">
-        <source src={videoData.rendered_video} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-    </>
-  )}
-</div>
-
-           
-
-    {videoData && (
-    <>
-        <Button className="w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-x text-base" asChild>
-        <Link href={`/brief/${videoData.video_id}`}>See more</Link>
-    </Button>
-    </>
-  )}
-      </div>
+      </main>
     </div>
-
-    </section>
+  </div>
   );
+  
 }

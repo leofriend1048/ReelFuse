@@ -185,7 +185,6 @@ export default function Page({ params }: { params: { id: string } }) {
            {videos.map((video, index) => (
            <div key={index}>
            <Link href={video.rendered_video}>Download MP4</Link>
-
            </div> ))}
 
          </DropdownMenuItem>
