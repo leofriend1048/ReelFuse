@@ -164,48 +164,48 @@ export default function Page({ params }: { params: { id: string } }) {
       <CarouselContent>
           <CarouselItem className="basis-1/4">
             <div className="p-1">
-                {videos &&
+            {videos &&
 videos.map((video, index) => (
-<Card variant="vertical">
-<CardContent className="p-4">
-<p
-  className="text-base text-gray-500 dark:text-gray-400"
-  dangerouslySetInnerHTML={{
-    __html: video.primary_copy_1.replace(/\n/g, '<br/>'),
-  }}
-  ref={(el) => (video.primaryCopyRef1 = el)}
-/>
-</CardContent>
-<CardFooter className="pt-4">
-<Button
-  size="sm"
-  variant="outline"
-  className="w-full"
-  onClick={() => {
-      toast("Copied to clipboard")
-    if (video.primaryCopyRef1) {
-      const selection = window.getSelection();
-      const range = document.createRange();
-      range.selectNodeContents(video.primaryCopyRef1);
-      selection.removeAllRanges();
-      selection.addRange(range);
-      document.execCommand('copy');
-      selection.removeAllRanges();
-    }
-  }}
->
-  <Clipboard className="w-4 h-4 mr-2 inline-block" /> Copy
-</Button>
-</CardFooter>
-</Card>
-))}            
+    <Card variant="vertical" key={`primary-copy-1-${index}`}> // Added a unique key here
+        <CardContent className="p-4">
+            <p
+                className="text-base text-gray-500 dark:text-gray-400"
+                dangerouslySetInnerHTML={{
+                    __html: video.primary_copy_1.replace(/\n/g, '<br/>'),
+                }}
+                ref={(el) => (video.primaryCopyRef1 = el)}
+            />
+        </CardContent>
+        <CardFooter className="pt-4">
+            <Button
+                size="sm"
+                variant="outline"
+                className="w-full"
+                onClick={() => {
+                    toast("Copied to clipboard")
+                    if (video.primaryCopyRef1) {
+                        const selection = window.getSelection();
+                        const range = document.createRange();
+                        range.selectNodeContents(video.primaryCopyRef1);
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                        document.execCommand('copy');
+                        selection.removeAllRanges();
+                    }
+                }}
+            >
+                <Clipboard className="w-4 h-4 mr-2 inline-block" /> Copy
+            </Button>
+        </CardFooter>
+    </Card>
+))}
             </div>
           </CarouselItem>
           <CarouselItem className="basis-1/4">
             <div className="p-1">
                 {videos &&
 videos.map((video, index) => (
-<Card className="h-full" variant="vertical">
+<Card className="h-full" variant="vertical" key={`primary-copy-2-${index}`}>
 <CardContent className="p-4 flex flex-col h-full">
 <p
   className="text-base text-gray-500 dark:text-gray-400 mb-auto"
@@ -244,7 +244,7 @@ videos.map((video, index) => (
             <div className="p-1">
                 {videos &&
 videos.map((video, index) => (
-<Card variant="vertical">
+<Card variant="vertical" key={`primary-copy-3-${index}`}>
 <CardContent className="p-4">
 <p
   className="text-base text-gray-500 dark:text-gray-400"
@@ -283,7 +283,7 @@ videos.map((video, index) => (
             <div className="p-1">
                 {videos &&
 videos.map((video, index) => (
-<Card variant="vertical">
+<Card variant="vertical" key={`primary-copy-4-${index}`}>
 <CardContent className="p-4">
 <p
   className="text-base text-gray-500 dark:text-gray-400"
@@ -322,7 +322,7 @@ videos.map((video, index) => (
             <div className="p-1">
                 {videos &&
 videos.map((video, index) => (
-<Card variant="vertical">
+<Card variant="vertical" key={`primary-copy-5-${index}`}>
 <CardContent className="p-4">
 <p
   className="text-base text-gray-500 dark:text-gray-400"
