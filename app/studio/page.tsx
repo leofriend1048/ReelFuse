@@ -79,8 +79,8 @@ import { createClient } from '@/utils/supabase/client'
 import { Redirect } from 'next';
 
 const FormSchema = z.object({
-  prompt: z.string().min(2, {
-    message: "Prompt st be at least 2 characters.",
+  prompt: z.string().min(10, {
+    message: "Prompt must be at least 10 characters",
   }),
 });
 
@@ -90,6 +90,7 @@ export default function Chat() {
   useEffect(() => {
     const checkUser = async () => {
       const { data, error } = await supabase.auth.getUser();
+
 
       if (error || !data?.user) {
         // Redirect to sign-in page using window.location for a full reload
@@ -801,22 +802,8 @@ export default function Chat() {
 </Button>
 </div>
 )}
-
-
                   </form>
                 </Form>
-
-
-
-
-
-
-
-
-
-
-
-
         </div>
       </main>
     </div>

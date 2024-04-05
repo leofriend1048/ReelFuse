@@ -73,7 +73,7 @@ const LibraryUpload = () => {
             window.location.reload(); 
             toast("New Video Uploaded");
           }
-      };
+      };``
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
