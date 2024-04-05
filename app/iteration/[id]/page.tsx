@@ -183,17 +183,19 @@ videos.map((video, index) => (
                 variant="outline"
                 className="w-full"
                 onClick={() => {
-                    toast("Copied to clipboard")
-                    if (video.primaryCopyRef1) {
-                        const selection = window.getSelection();
-                        const range = document.createRange();
-                        range.selectNodeContents(video.primaryCopyRef1);
-                        selection.removeAllRanges();
-                        selection.addRange(range);
-                        document.execCommand('copy');
-                        selection.removeAllRanges();
+                  toast("Copied to clipboard");
+                  if (video.primaryCopyRef1) {
+                    const selection = window.getSelection();
+                    if (selection) {
+                      const range = document.createRange();
+                      range.selectNodeContents(video.primaryCopyRef1.current); 
+                      selection.removeAllRanges();
+                      selection.addRange(range);
+                      document.execCommand('copy');
+                      selection.removeAllRanges();
                     }
-                }}
+                  }
+                }}                
             >
                 <Clipboard className="w-4 h-4 mr-2 inline-block" /> Copy
             </Button>
