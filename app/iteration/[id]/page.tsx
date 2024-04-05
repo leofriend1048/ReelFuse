@@ -383,6 +383,187 @@ videos.map((video, index) => (
       <CarouselNext />
     </Carousel>
 
+
+    <CardTitle className="text-2xl font-bold tracking-tighter sm:text-3xl">Headline Copy</CardTitle>
+
+<Carousel
+      opts={{
+        align: "start",
+      }}
+      className="w-full"
+      orientation="horizontal"
+    >
+      <CarouselContent>
+      <CarouselItem className="basis-1/4">
+  <div className="p-1">
+    {videos && videos.map((video, index) => (
+      <Card key={`headline-copy-1-${index}`}>
+        <CardContent className="p-4">
+          <p className="text-base text-gray-500 dark:text-gray-400">{video.headline_copy_1}</p>
+        </CardContent>
+        <CardFooter className="pt-4">
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-full"
+            onClick={() => {
+              navigator.clipboard.writeText(video.headline_copy_1)
+                .then(() => {
+                  // Success
+                  toast("Copied to clipboard");
+                })
+                .catch((error) => {
+                  // Error
+                  console.error("Error copying to clipboard", error);
+                  toast("Error copying to clipboard");
+                });
+            }}
+          >
+            <Clipboard className="w-4 h-4 mr-2 inline-block" /> Copy
+          </Button>
+        </CardFooter>
+      </Card>
+    ))}
+  </div>
+      </CarouselItem>
+
+      <CarouselItem className="basis-1/4">
+  <div className="p-1">
+    {videos && videos.map((video, index) => (
+      <Card key={`headline-copy-2-${index}`}>
+        <CardContent className="p-4">
+          <p className="text-base text-gray-500 dark:text-gray-400">{video.headline_copy_2}</p>
+        </CardContent>
+        <CardFooter className="pt-4">
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-full"
+            onClick={() => {
+              navigator.clipboard.writeText(video.headline_copy_2)
+                .then(() => {
+                  // Success
+                  toast("Copied to clipboard");
+                })
+                .catch((error) => {
+                  // Error
+                  console.error("Error copying to clipboard", error);
+                  toast("Error copying to clipboard");
+                });
+            }}
+          >
+            <Clipboard className="w-4 h-4 mr-2 inline-block" /> Copy
+          </Button>
+        </CardFooter>
+      </Card>
+    ))}
+  </div>
+      </CarouselItem>
+
+      <CarouselItem className="basis-1/4">
+  <div className="p-1">
+    {videos && videos.map((video, index) => (
+      <Card key={`headline-copy-3-${index}`}>
+        <CardContent className="p-4">
+          <p className="text-base text-gray-500 dark:text-gray-400">{video.headline_copy_3}</p>
+        </CardContent>
+        <CardFooter className="pt-4">
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-full"
+            onClick={() => {
+              navigator.clipboard.writeText(video.headline_copy_3)
+                .then(() => {
+                  // Success
+                  toast("Copied to clipboard");
+                })
+                .catch((error) => {
+                  // Error
+                  console.error("Error copying to clipboard", error);
+                  toast("Error copying to clipboard");
+                });
+            }}
+          >
+            <Clipboard className="w-4 h-4 mr-2 inline-block" /> Copy
+          </Button>
+        </CardFooter>
+      </Card>
+    ))}
+  </div>
+      </CarouselItem>
+
+      <CarouselItem className="basis-1/4">
+  <div className="p-1">
+    {videos && videos.map((video, index) => (
+      <Card key={`headline-copy-4-${index}`}>
+        <CardContent className="p-4">
+          <p className="text-base text-gray-500 dark:text-gray-400">{video.headline_copy_4}</p>
+        </CardContent>
+        <CardFooter className="pt-4">
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-full"
+            onClick={() => {
+              navigator.clipboard.writeText(video.headline_copy_4)
+                .then(() => {
+                  // Success
+                  toast("Copied to clipboard");
+                })
+                .catch((error) => {
+                  // Error
+                  console.error("Error copying to clipboard", error);
+                  toast("Error copying to clipboard");
+                });
+            }}
+          >
+            <Clipboard className="w-4 h-4 mr-2 inline-block" /> Copy
+          </Button>
+        </CardFooter>
+      </Card>
+    ))}
+  </div>
+      </CarouselItem>
+
+      <CarouselItem className="basis-1/4">
+  <div className="p-1">
+    {videos && videos.map((video, index) => (
+      <Card key={`headline-copy-5-${index}`}>
+        <CardContent className="p-4">
+          <p className="text-base text-gray-500 dark:text-gray-400">{video.headline_copy_5}</p>
+        </CardContent>
+        <CardFooter className="pt-4">
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-full"
+            onClick={() => {
+              navigator.clipboard.writeText(video.headline_copy_5)
+                .then(() => {
+                  // Success
+                  toast("Copied to clipboard");
+                })
+                .catch((error) => {
+                  // Error
+                  console.error("Error copying to clipboard", error);
+                  toast("Error copying to clipboard");
+                });
+            }}
+          >
+            <Clipboard className="w-4 h-4 mr-2 inline-block" /> Copy
+          </Button>
+        </CardFooter>
+      </Card>
+    ))}
+  </div>
+      </CarouselItem>
+          
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+
         </main>
     ;
 }
