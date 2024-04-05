@@ -160,13 +160,14 @@ export default function Page({ params }: { params: { id: string } }) {
         align: "start",
       }}
       className="w-full"
+      orientation="horizontal"
     >
       <CarouselContent>
           <CarouselItem className="basis-1/4">
             <div className="p-1">
             {videos &&
 videos.map((video, index) => (
-    <Card variant="vertical" key={`primary-copy-1-${index}`}> 
+    <Card key={`primary-copy-1-${index}`}> 
         <CardContent className="p-4">
             <p
                 className="text-base text-gray-500 dark:text-gray-400"
@@ -205,7 +206,7 @@ videos.map((video, index) => (
             <div className="p-1">
                 {videos &&
 videos.map((video, index) => (
-<Card className="h-full" variant="vertical" key={`primary-copy-2-${index}`}>
+<Card key={`primary-copy-2-${index}`}>
 <CardContent className="p-4 flex flex-col h-full">
 <p
   className="text-base text-gray-500 dark:text-gray-400 mb-auto"
@@ -244,7 +245,7 @@ videos.map((video, index) => (
             <div className="p-1">
                 {videos &&
 videos.map((video, index) => (
-<Card variant="vertical" key={`primary-copy-3-${index}`}>
+<Card key={`primary-copy-3-${index}`}>
 <CardContent className="p-4">
 <p
   className="text-base text-gray-500 dark:text-gray-400"
@@ -283,7 +284,7 @@ videos.map((video, index) => (
             <div className="p-1">
                 {videos &&
 videos.map((video, index) => (
-<Card variant="vertical" key={`primary-copy-4-${index}`}>
+<Card key={`primary-copy-4-${index}`}>
 <CardContent className="p-4">
 <p
   className="text-base text-gray-500 dark:text-gray-400"
@@ -322,7 +323,7 @@ videos.map((video, index) => (
             <div className="p-1">
                 {videos &&
 videos.map((video, index) => (
-<Card variant="vertical" key={`primary-copy-5-${index}`}>
+<Card key={`primary-copy-5-${index}`}>
 <CardContent className="p-4">
 <p
   className="text-base text-gray-500 dark:text-gray-400"
@@ -362,14 +363,6 @@ videos.map((video, index) => (
       <CarouselNext />
     </Carousel>
 
-
-    
- 
-
-
-
-
-    
         </main>
     ;
 }
