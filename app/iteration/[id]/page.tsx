@@ -183,19 +183,21 @@ videos.map((video, index) => (
                 variant="outline"
                 className="w-full"
                 onClick={() => {
-                  toast("Copied to clipboard");
-                  if (video.primaryCopyRef1) {
+                  try {
                     const selection = window.getSelection();
-                    if (selection) {
+                    if (selection && video.primaryCopyRef1) {
                       const range = document.createRange();
-                      range.selectNodeContents(video.primaryCopyRef1.current); 
+                      range.selectNodeContents(video.primaryCopyRef1);
                       selection.removeAllRanges();
                       selection.addRange(range);
                       document.execCommand('copy');
                       selection.removeAllRanges();
+                      toast("Copied to clipboard");
                     }
+                  } catch (error) {
+                    toast("Error copying to clipboard");
                   }
-                }}                
+                }}     
             >
                 <Clipboard className="w-4 h-4 mr-2 inline-block" /> Copy
             </Button>
@@ -224,15 +226,19 @@ videos.map((video, index) => (
   variant="outline"
   className="w-full"
   onClick={() => {
-      toast("Copied to clipboard")
-    if (video.primaryCopyRef2) {
+    try {
       const selection = window.getSelection();
-      const range = document.createRange();
-      range.selectNodeContents(video.primaryCopyRef2);
-      selection.removeAllRanges();
-      selection.addRange(range);
-      document.execCommand('copy');
-      selection.removeAllRanges();
+      if (selection && video.primaryCopyRef2) {
+        const range = document.createRange();
+        range.selectNodeContents(video.primaryCopyRef2);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand('copy');
+        selection.removeAllRanges();
+        toast("Copied to clipboard");
+      }
+    } catch (error) {
+      toast("Error copying to clipboard");
     }
   }}
 >
@@ -263,15 +269,19 @@ videos.map((video, index) => (
   variant="outline"
   className="w-full"
   onClick={() => {
-      toast("Copied to clipboard")
-    if (video.primaryCopyRef3) {
+    try {
       const selection = window.getSelection();
-      const range = document.createRange();
-      range.selectNodeContents(video.primaryCopyRef3);
-      selection.removeAllRanges();
-      selection.addRange(range);
-      document.execCommand('copy');
-      selection.removeAllRanges();
+      if (selection && video.primaryCopyRef3) {
+        const range = document.createRange();
+        range.selectNodeContents(video.primaryCopyRef3);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand('copy');
+        selection.removeAllRanges();
+        toast("Copied to clipboard");
+      }
+    } catch (error) {
+      toast("Error copying to clipboard");
     }
   }}
 >
@@ -302,15 +312,19 @@ videos.map((video, index) => (
   variant="outline"
   className="w-full"
   onClick={() => {
-      toast("Copied to clipboard")
-    if (video.primaryCopyRef4) {
+    try {
       const selection = window.getSelection();
-      const range = document.createRange();
-      range.selectNodeContents(video.primaryCopyRef4);
-      selection.removeAllRanges();
-      selection.addRange(range);
-      document.execCommand('copy');
-      selection.removeAllRanges();
+      if (selection && video.primaryCopyRef4) {
+        const range = document.createRange();
+        range.selectNodeContents(video.primaryCopyRef4);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand('copy');
+        selection.removeAllRanges();
+        toast("Copied to clipboard");
+      }
+    } catch (error) {
+      toast("Error copying to clipboard");
     }
   }}
 >
@@ -341,15 +355,19 @@ videos.map((video, index) => (
   variant="outline"
   className="w-full"
   onClick={() => {
-      toast("Copied to clipboard")
-    if (video.primaryCopyRef5) {
+    try {
       const selection = window.getSelection();
-      const range = document.createRange();
-      range.selectNodeContents(video.primaryCopyRef5);
-      selection.removeAllRanges();
-      selection.addRange(range);
-      document.execCommand('copy');
-      selection.removeAllRanges();
+      if (selection && video.primaryCopyRef5) {
+        const range = document.createRange();
+        range.selectNodeContents(video.primaryCopyRef5);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand('copy');
+        selection.removeAllRanges();
+        toast("Copied to clipboard");
+      }
+    } catch (error) {
+      toast("Error copying to clipboard");
     }
   }}
 >
