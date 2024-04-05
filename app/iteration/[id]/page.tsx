@@ -166,7 +166,7 @@ export default function Page({ params }: { params: { id: string } }) {
             <div className="p-1">
             {videos &&
 videos.map((video, index) => (
-    <Card variant="vertical" key={`primary-copy-1-${index}`}> // Added a unique key here
+    <Card variant="vertical" key={`primary-copy-1-${index}`}> 
         <CardContent className="p-4">
             <p
                 className="text-base text-gray-500 dark:text-gray-400"
