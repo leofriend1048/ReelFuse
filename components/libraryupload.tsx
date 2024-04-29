@@ -9,7 +9,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, FieldError } from 'react-hook-form';
 import * as z from 'zod';
 import { Input } from './ui/input';
 import { Button } from "@/components/ui/button"
@@ -25,18 +25,22 @@ import {
     DialogTitle,
     DialogTrigger,
   } from "@/components/ui/dialog"
-  import { Upload } from "lucide-react"
+  import { Upload, Loader2 } from "lucide-react"
+  import { useState } from 'react';
+
 
   
 
 const supabase = createClient();
 
 const LibraryUpload = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   
     const formSchema = z.object({
       clipdescription: z.string().min(1, 'Description of clip is required').trim(),
-      file: z.any().refine((file) => file?.length === 1, 'File is required.')
-                .refine((file) => file[0]?.size <= 6000000, 'Max file size is 6MB.'),
+      file: z.any().refine((file) => file?.length === 1, 'File is required')
+                .refine((file) => file[0]?.size <= 50000000, 'Max file size is 50MB'),
     });
   
     const form = useForm<z.infer<typeof formSchema>>({
@@ -76,6 +80,7 @@ const LibraryUpload = () => {
       };``
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
+      setIsLoading(true); // Set loading state to true when the form is submitted
         try {
             const files = values.file;
             if (files && files.length > 0) {
@@ -83,37 +88,48 @@ const LibraryUpload = () => {
                 await uploadFile(file, values.clipdescription);
             } else {
             }
-        } catch (error) {
+          } catch (error) {
             console.error('Error during form submission:', error);
+        } finally {
+            setIsLoading(false); // Reset loading state after form submission is done
         }
     };
 
     return (
-        <Dialog>
-  <DialogTrigger>
-  <Button variant="outline">
-        <Upload className="mr-2 h-4 w-4"/>Upload New Video
-      </Button>
-  </DialogTrigger>
-  <DialogContent>
-    <h3 className="text-3xl font-medium leading-none tracking-tight text-center pb-6">Upload New Video</h3>
-  <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="pt-4 space-y-2">
+      <Dialog>
+      <DialogTrigger>
+        <Button variant="outline">
+          <Upload className="mr-2 h-4 w-4"/>Upload New Video
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <h3 className="text-3xl font-medium leading-none tracking-tight text-center pb-6">Upload New Video</h3>
+        <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="pt-4 space-y-2">
             <label className="text-sm font-medium">Description of clip</label>
-                <Textarea {...form.register('clipdescription')} className="ring-offset-white  focus-visible:ring-0 focus-visible:ring-slate-950 focus-visible:ring-offset-0" placeholder="Your detailed description goes here ..." /> 
-            </div>
-            <div className="pt-4 space-y-2">
-                <label className="text-sm font-medium">Video</label>
-                <Input type="file" {...fileRef} name="file" />
-            </div>
-            <div className="pt-4">
-            <Button className="w-full" type="submit">
-                Submit
+            <Textarea {...form.register('clipdescription')} className="ring-offset-white  focus-visible:ring-0 focus-visible:ring-slate-950 focus-visible:ring-offset-0" placeholder="Your detailed description goes here ..." /> 
+            {form.formState.errors.clipdescription && <p>{(form.formState.errors.clipdescription as FieldError).message}</p>}
+          </div>
+          <div className="pt-4 space-y-2">
+            <label className="text-sm font-medium">Video</label>
+            <Input type="file" {...fileRef} name="file" />
+            {form.formState.errors.file && <p>{(form.formState.errors.file as FieldError).message}</p>}
+          </div>
+          <div className="pt-4">
+            <Button className="w-full" type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </>
+              ) : (
+                'Submit'
+              )}
             </Button>
-            </div>
+          </div>
         </form>
-  </DialogContent>
-</Dialog>
+      </DialogContent>
+    </Dialog>
     );
 };
   
