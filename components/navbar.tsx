@@ -14,7 +14,7 @@ import {
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu"
 import Navigation from "@/components/navigation"
-import logo from '../public/logo.svg'
+import FullLogo from '../public/FullLogo.png'
 import { CardTitle } from './ui/card';
 
 
@@ -26,8 +26,7 @@ const Navbar = () => {
       
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <Image className="h-8" src={logo} alt="Michael Todd Beauty Logo"/>
-
+          <Image className="h-8 w-auto" src={FullLogo} alt="Reel Fuse Logo" priority/>
         </a>
         <div className="flex md:order-2 space-x-6 md:space-x-6 rtl:space-x-reverse">
         </div>
