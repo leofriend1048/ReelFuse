@@ -100,6 +100,9 @@ export default function Chat() {
       <section className="flex min-h flex-col items-center p-20 space-y-10">
         <Navbar />
         <CardTitle>Modular Video Library</CardTitle>
+
+        
+        
         {/* Placeholder skeleton for loading content */}
         <div className="flex flex-row flex-wrap justify-center">
           {Array(6).fill(0).map((_, index) => ( // Assuming 4 placeholders
