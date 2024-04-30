@@ -2,10 +2,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Navbar from '@/components/navbar';
 import { Button } from '@/components/ui/button';
-import { fromUrl } from '@uploadcare/upload-client'
-import { fromUrlStatus } from '@uploadcare/upload-client'
-import { base } from '@uploadcare/upload-client'
-import Link from 'next/link';
 import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -23,7 +19,6 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input';
 
 import { createClient } from '@/utils/supabase/client'
-import { Redirect } from 'next';
 import LibraryUpload from '@/components/libraryupload';
 
 
@@ -47,8 +42,9 @@ export default function Chat() {
   Array<{ video_url: string; description: string }>
 >([]);
 
-  const [isLoading, setIsLoading] = useState(true); // Loading state
-  const [description, setDescription] = useState(''); // Add this line
+  const [isLoading, setIsLoading] = useState(true);
+  const [description, setDescription] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const supabase = createClient();
   
   const handleUpdate = async (video: { video_url: string }) => {
@@ -125,10 +121,25 @@ export default function Chat() {
       <Navbar />
       <CardTitle>Modular Video Library</CardTitle>
 
+      <div className="flex flex-row space-x-8 max-w-max">
+        
+
      <LibraryUpload />
 
+     <Input
+  type="text"
+  placeholder="Search..."
+  value={searchTerm}
+  className="ring-0 hover:ring-0 focus:ring-0"
+  onChange={(e) => setSearchTerm(e.target.value)}
+/>
+
+</div>
+
     <div className="flex flex-row flex-wrap justify-center">
-        {videoData.map((video, index) => (
+    {videoData
+  .filter((video) => video.description.toLowerCase().includes(searchTerm.toLowerCase()))
+  .map((video, index) => (
           <Card key={index} className="rounded-lg shadow-lg max-w-xs mx-auto hover:shadow-xl transition-all duration-200 m-4 transition duration-300 hover:-translate-y-2">
             <div className="flex justify-center">
               <video width="auto" height="auto" controls preload="auto">
@@ -177,4 +188,3 @@ export default function Chat() {
   );
   
 }
-
