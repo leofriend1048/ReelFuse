@@ -24,12 +24,9 @@ import { createClient } from '@/utils/supabase/client'
 import { Redirect } from 'next';
 
 
-
-
-
 const FormSchema = z.object({
   prompt: z.string().min(2, {
-    message: "Prompt st be at least 2 characters.",
+    message: "Prompt must be at least 2 characters.",
   }),
 });
 
@@ -300,7 +297,6 @@ export default function Chat() {
       }
     }
   }
-  
   
   async function insertIntoSupabase(renderUrl: string, voiceover: string, scriptData: ReturnType<typeof parseResponseData>, prompt: string) {
     const { data: supabaseData, error: supabaseError } = await supabase

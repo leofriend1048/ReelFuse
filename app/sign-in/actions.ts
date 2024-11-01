@@ -25,6 +25,23 @@ export async function login(formData: FormData) {
   redirect('/bot')
 }
 
+
+export async function signInWithGoogle() {
+  const supabase = createClient()
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: 'https://uwfllbptpdqoovbeizya.supabase.co/auth/v1/callback?next=/bot',
+    },
+  })
+
+  if (data.url) {
+    redirect(data.url) 
+  }
+}
+
+
 export async function signup(formData: FormData) {
   const supabase = createClient()
 
@@ -42,5 +59,5 @@ export async function signup(formData: FormData) {
   }
 
   revalidatePath('/', 'layout')
-  redirect('/bot')
+  redirect('/michael-todd-beauty/library')
 }

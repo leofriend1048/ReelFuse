@@ -1,22 +1,7 @@
 import React from 'react';
-import Link from 'next/link';
 import Image from 'next/image'
-import { buttonVariants } from "@/components/ui/button"
-import { Button } from "@/components/ui/button"
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-} from "@/components/ui/navigation-menu"
 import Navigation from "@/components/navigation"
 import FullLogo from '../public/FullLogo.png'
-import { CardTitle } from './ui/card';
-
 
 
 const Navbar = () => {

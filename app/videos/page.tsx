@@ -104,7 +104,7 @@ export default function Chat() {
       <CardTitle>Video Library</CardTitle>
       <div className="flex flex-row flex-wrap justify-center">
         {videoData.map((video, index) => (
-          <Card key={index} className="rounded-lg shadow-lg max-w-xs mx-auto hover:shadow-xl transition-all duration-200 m-4">
+          <Card key={index} className="rounded-lg shadow-lg max-w-xs mx-auto hover:shadow-xl transition-all duration-200 m-4 transition duration-300 hover:-translate-y-2">
             <div className="flex justify-center">
               <video width="auto" height="auto" controls preload="auto">
                 <source src={video.rendered_video} type="video/mp4" />

@@ -3,7 +3,6 @@ import './globals.css'
 import { Toaster } from "@/components/ui/sonner"
 import { Metadata } from 'next'
 
-
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {

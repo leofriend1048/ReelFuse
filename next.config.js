@@ -1,6 +1,11 @@
-const { withNextVideo } = require('next-video/process')
-
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'uwfllbptpdqoovbeizya.supabase.co' }
+    ],
+    minimumCacheTTL: 604800, // 7 days in seconds
+  },
+}
 
-module.exports = withNextVideo(nextConfig)
+module.exports = nextConfig
