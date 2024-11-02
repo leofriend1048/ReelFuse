@@ -14,8 +14,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-import WorkspaceSwitcher from "@/components/WorkspaceSwitcher";
-
+import WorkspaceSwitcher2 from "./WorkspaceSwitcher2"
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "Rendered Videos",
@@ -63,7 +62,7 @@ function Navigation() {
         </NavigationMenuItem>
         {pathname && pathname.includes("/library") && (
           <NavigationMenuItem>
-            <WorkspaceSwitcher />
+            <WorkspaceSwitcher2 />
           </NavigationMenuItem>
         )}
       </NavigationMenuList>
