@@ -409,19 +409,23 @@ export default function LibraryUpload() {
                         className="flex items-center justify-between rounded-lg border bg-card p-3"
                       >
                         <div className="flex items-center space-x-3">
-                          <div className="flex h-10 w-auto items-center justify-center rounded-lg bg-primary/10 overflow-hidden">
-                            {thumbnails[file.name] ? (
-                              <img
-                                src={thumbnails[file.name]}
-                                alt={`Thumbnail for ${file.name}`}
-                                className="h-10 w-auto object-cover"
-                              />
-                            ) : (
-                              <div className="h-10 w-16 flex items-center justify-center">
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              </div>
-                            )}
-                          </div>
+                        <div className="flex h-10 w-auto items-center justify-center rounded-lg bg-primary/10 overflow-hidden">
+  {thumbnails[file.name] ? (
+    <Image
+      src={thumbnails[file.name]}
+      alt={`Thumbnail for ${file.name}`}
+      width={40} // Required by Next.js, but we’ll override with CSS
+      height={40} // Sets fixed height
+      className="w-auto h-10 object-cover"
+      unoptimized // Optional
+    />
+  ) : (
+    <div className="h-10 w-16 flex items-center justify-center">
+      <Loader2 className="h-4 w-4 animate-spin" />
+    </div>
+  )}
+</div>
+
                           <div>
                             <p className="text-sm font-medium leading-none">
                               {file.name.length > 50 ? file.name.substring(0, 47) + '...' : file.name}
