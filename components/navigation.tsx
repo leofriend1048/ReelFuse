@@ -14,7 +14,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-import WorkspaceSwitcher from "@/components/WorkspaceSwitcher"
+import WorkspaceSwitcher from "./WorkspaceSwitcher"
 
 const components: { title: string; href: string; description: string }[] = [
   {
