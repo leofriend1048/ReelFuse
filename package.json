@@ -99,6 +99,7 @@
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.9",
+    "@types/cookie": "^1.0.0",
     "@types/fluent-ffmpeg": "^2.1.27",
     "@types/lodash.isequal": "^4.5.8",
     "@types/node": "^20.17.5",
