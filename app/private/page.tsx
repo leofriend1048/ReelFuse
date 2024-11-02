@@ -10,8 +10,6 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
-import SignOutButton from '@/components/signoutbutton'
-
 import { createClient } from '@/utils/supabase/server'
 
 export default async function PrivatePage() {
@@ -67,7 +65,6 @@ export default async function PrivatePage() {
                   <DropdownMenuItem>Billing</DropdownMenuItem>
                   <DropdownMenuItem>Account</DropdownMenuItem>
                   <Separator />
-                  <SignOutButton />
                 </DropdownMenuContent>
               </DropdownMenu>
   </div>

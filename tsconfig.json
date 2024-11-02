@@ -1,26 +1,28 @@
 {
   "compilerOptions": {
-    "target": "es2017", // Updated to a more modern JavaScript version
+    "target": "es2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "skipLibCheck": false, // Changed to false to catch type issues in declaration files
+    "skipLibCheck": false,
     "strict": true,
-    "noEmit": false, // Changed to false if TypeScript should emit JavaScript files
+    "noEmit": false,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node", // Changed from "bundler" to "node"
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "baseUrl": ".", // Add this line
+    "paths": {
+      "@/*": ["./*"],
+      "@/components/*": ["components/*"]
+    },
     "plugins": [
       {
         "name": "next"
       }
-    ],
-    "paths": {
-      "@/*": ["./*"]
-    }
+    ]
   },
   "include": [
     "video.d.ts",
