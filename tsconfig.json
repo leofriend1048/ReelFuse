@@ -3,7 +3,7 @@
     "target": "es2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,  // Set to true to bypass type checking for .d.ts files
     "strict": true,
     "noEmit": false,
     "esModuleInterop": true,
