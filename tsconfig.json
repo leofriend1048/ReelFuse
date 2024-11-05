@@ -25,7 +25,7 @@
     ]
   },
   "include": [
-    "types/*",
+    "types/*.d.ts", 
     "video.d.ts",
     "next-env.d.ts",
     "**/*.ts",
