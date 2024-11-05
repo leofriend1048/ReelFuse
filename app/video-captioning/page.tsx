@@ -1,28 +1,44 @@
-import React from 'react';
+"use client";
+
+import React, { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { captionVideo } from '@/lib/ffmepg';
-import { Button } from '@/components/ui/button'; 
 
-const HomePage = async ({ searchParams }: { searchParams: { concatenatedHookVisual1?: string } }) => {
-  const concatenatedHookVisual1 = searchParams?.concatenatedHookVisual1 || '';
-  let captionedVideoUrl = '';
-  let loading = false;
+const HomePage = ({ searchParams }: { searchParams: { concatenatedHookVisual1?: string } }) => {
+  const [concatenatedHookVisual1, setConcatenatedHookVisual1] = useState(searchParams?.concatenatedHookVisual1 || '');
+  const [captionedVideoUrl, setCaptionedVideoUrl] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  if (concatenatedHookVisual1) {
-    loading = true;
-    try {
-      captionedVideoUrl = await captionVideo(concatenatedHookVisual1);
-    } catch (error) {
-      console.error('Error captioning video:', error);
-    } finally {
-      loading = false;
-    }
-  }
+  useEffect(() => {
+    const fetchCaptionedVideo = async () => {
+      if (concatenatedHookVisual1) {
+        setLoading(true);
+        try {
+          const result = await captionVideo(concatenatedHookVisual1);
+          setCaptionedVideoUrl(result);
+        } catch (error) {
+          console.error('Error captioning video:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchCaptionedVideo();
+  }, [concatenatedHookVisual1]);
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const input = form.elements.namedItem("concatenatedHookVisual1") as HTMLInputElement;
+    setConcatenatedHookVisual1(input.value);
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md p-4">
         <h1 className="text-center text-2xl font-bold mb-4">Video Captioning</h1>
-        <form method="get" className="flex flex-col items-center">
+        <form onSubmit={handleSubmit} className="flex flex-col items-center">
           <input
             type="text"
             name="concatenatedHookVisual1"
