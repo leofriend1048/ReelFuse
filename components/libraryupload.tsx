@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
-import { inngest } from "@/src/inngest";
+import { inngest } from '@/src/inngest/client';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
