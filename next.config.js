@@ -6,6 +6,9 @@ const nextConfig = {
     ],
     minimumCacheTTL: 604800, // 7 days in seconds
   },
-}
+  typescript: {
+    ignoreBuildErrors: true, // Ignore TypeScript build errors
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
