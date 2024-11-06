@@ -1,4 +1,4 @@
-import { inngest } from "@/src/inngest";
+import { inngest } from "@/src/inngest/client";
 import { transcribeAudioFromUrl } from "@/lib/deepgram";
 import { gpt3TranscriptionAnalysis, gptHookVisualDescription } from "@/lib/openai"; 
 import { trimOriginalVideoHook, concatenateVideos, captionVideo, generatePoster, calculateVideoDuration } from "@/lib/ffmepg";
