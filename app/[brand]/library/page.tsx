@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef, Suspense, useCallback } from 'react
 import { useParams, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/navbar';
 import { Card, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -200,7 +200,8 @@ export default function Chat() {
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
   const supabase = createClient();
   const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: "sk-proj-dOGjk0Ag2oXQxjweX0JDT3BlbkFJ70Xy4sHsKdSRiyEYqI2B",
+    dangerouslyAllowBrowser: true,
   });
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -665,7 +666,7 @@ export default function Chat() {
                 </div>
                 <div className="w-1/3 bg-white p-8 space-y-4 overflow-y-auto border-l">
                   <div className="flex justify-between items-center">
-                    <CardTitle>Edit Details</CardTitle>
+                    <DialogTitle className="text-lg">Edit Details</DialogTitle>
                     <Button
                       variant="outline"
                       size="sm"
