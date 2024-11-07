@@ -9,8 +9,7 @@ import fetch from 'node-fetch';
 
 const supabase = createClient();
 const openai = new OpenAI({
-  apiKey: 'sk-proj-dOGjk0Ag2oXQxjweX0JDT3BlbkFJ70Xy4sHsKdSRiyEYqI2B',
-  dangerouslyAllowBrowser: true,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 // Helper function to convert HH:MM:SS to seconds

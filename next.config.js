@@ -7,7 +7,7 @@ const nextConfig = {
     minimumCacheTTL: 604800, // 7 days in seconds
   },
   typescript: {
-    ignoreBuildErrors: true, // Ignore TypeScript build errors
+    // Removed the line that ignores TypeScript build errors
   },
 };
 
