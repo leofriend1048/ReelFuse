@@ -196,7 +196,7 @@ export const videoLibraryProcessing = inngest.createFunction(
         const [{ embedding: trimmedEmbedding }] = trimmedEmbeddingResult.data;
 
         // Calculate the duration of the trimmed video
-        const durationResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/video-duration`, {
+        const durationResponse = await fetch(`https://reelfuse.co/api/video-duration`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

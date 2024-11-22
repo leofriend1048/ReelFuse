@@ -31,6 +31,9 @@ dependencies:
   '@hookform/resolvers':
     specifier: ^3.9.1
     version: 3.9.1(react-hook-form@7.53.1)
+  '@numairawan/video-duration':
+    specifier: ^1.0.0
+    version: 1.0.0
   '@radix-ui/react-accordion':
     specifier: ^1.2.1
     version: 1.2.1(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1)(react@18.3.1)
@@ -1334,6 +1337,15 @@ packages:
     resolution: {integrity: sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==}
     engines: {node: '>=12.4.0'}
     dev: true
+
+  /@numairawan/video-duration@1.0.0:
+    resolution: {integrity: sha512-C819BxippZk2ajzfJt/S8kD5NJqAxuDZc1W4rqHVjzgoUI5Wjo7ehoH4dTIGesUEOxTobIXh6iOKAhhvGEDYpg==}
+    dependencies:
+      axios: 1.7.7
+      mime-types: 2.1.35
+    transitivePeerDependencies:
+      - debug
+    dev: false
 
   /@opentelemetry/api@1.9.0:
     resolution: {integrity: sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg==}
