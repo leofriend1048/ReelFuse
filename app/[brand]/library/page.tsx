@@ -18,6 +18,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { LibraryDropdown } from '@/components/LibraryDropDown';
 import VideoPlayer from '@/components/video-player';
 import VideoThumbnail from '@/components/video-thumbnail';
+import { TotalFootage } from '@/components/total-footage';
 import {
   Pagination,
   PaginationContent,
@@ -516,7 +517,8 @@ export default function Chat() {
       <Navbar />
       <CardTitle>Modular Video Library</CardTitle>
 
-      <div className="flex flex-row space-x-8 max-w-max">
+      <div className="w-full max-w-7xl flex flex-row items-center justify-between">
+      <div className="flex flex-row space-x-8">
         <LibraryUpload />
         <div className="relative">
           <Input
@@ -561,6 +563,8 @@ export default function Chat() {
         >
           {isSelectionMode ? "Cancel Selection" : "Bulk Select"}
         </Button>
+      </div>
+      <TotalFootage brand={brand as string} />
       </div>
 
       <Suspense
