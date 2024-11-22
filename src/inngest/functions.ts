@@ -1,7 +1,5 @@
 import { inngest } from "@/src/inngest/client";
-import { transcribeAudioFromUrl } from "@/lib/deepgram";
 import { gpt3TranscriptionAnalysis, gptHookVisualDescription } from "@/lib/openai"; 
-import { trimOriginalVideoHook, concatenateVideos, captionVideo, generatePoster, calculateVideoDuration } from "@/lib/ffmepg";
 import OpenAI from 'openai';
 import { createClient } from '@/utils/supabase/client';
 import fetch from 'node-fetch';
@@ -198,7 +196,19 @@ export const videoLibraryProcessing = inngest.createFunction(
         const [{ embedding: trimmedEmbedding }] = trimmedEmbeddingResult.data;
 
         // Calculate the duration of the trimmed video
-        const trimmedDuration = await calculateVideoDuration(trimmedVideoURL);
+        const durationResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/video-duration`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ videoUrl: trimmedVideoURL }),
+        });
+
+        if (!durationResponse.ok) {
+          throw new Error(`HTTP error! status: ${durationResponse.status}`);
+        }
+
+        const { duration: trimmedDuration } = await durationResponse.json();
         console.log(`Calculated duration for trimmed video: ${trimmedDuration}`);
 
         const { error: trimmedError } = await supabase.from('modular_clips').insert([
@@ -219,136 +229,3 @@ export const videoLibraryProcessing = inngest.createFunction(
   },
 );
 
-
-export const videoIteration = inngest.createFunction(
-  { id: "video-iteration" },
-  { event: "iteration/video.received" },
-  async ({ event, step }) => {
-    // Step 1: Transcribe the video
-    const transcriptionResponse = await step.run("transcribe-video", async () => {
-      try {
-        const response = await transcribeAudioFromUrl(event.data.originalFileUrl);
-        console.log("Transcription response:", response);
-        return response;
-      } catch (error) {
-        console.error("Error transcribing video:", error);
-        throw error;
-      }
-    });
-
-    // Extract the transcript text from the response
-    let transcriptText = "";
-    if (transcriptionResponse.results && transcriptionResponse.results.channels) {
-      transcriptText = transcriptionResponse.results.channels
-        .map((channel: any) => channel.alternatives[0].transcript)
-        .join(' ');
-    } else {
-      throw new Error("Transcription response does not have the expected format.");
-    }
-    console.log("Transcript text:", transcriptText);
-
-    // Step 2: Generate GPT-3 completion
-    const gpt3TranscriptionAnalysisResult = await step.run("analyze-transcription", async () => {
-      try {
-        const analysisResult = await gpt3TranscriptionAnalysis(transcriptText);
-        return analysisResult;
-      } catch (error) {
-        console.error("Error generating GPT-3 completion:", error);
-        throw error;
-      }
-    });
-
-    // Step 3: Generate GPT-3 hook visual description
-    const gptHookVisualDescriptionResult = await step.run("generate-hook-visual-descriptions", async () => {
-      try {
-        const hookVisualDescriptionResult = await gptHookVisualDescription(gpt3TranscriptionAnalysisResult);
-        return hookVisualDescriptionResult;
-      } catch (error) {
-        console.error("Error generating GPT-3 hook visual description:", error);
-        throw error;
-      }
-    });
-
-    // Step 4: Match modular clips using OpenAI embeddings
-    const gpt1HookVisualUrlResult = await step.run("vector-hook-visual-url", async () => {
-      try {
-        // Directly access the hookDescription1 property
-        const hook1Description = gptHookVisualDescriptionResult.hookDescription1;
-        const result = await openai.embeddings.create({
-          input: hook1Description,
-          model: "text-embedding-3-small",
-        });
-
-    const [{ embedding }] = result.data;
-
-    const { data, error: matchError } = await supabase
-      .rpc("match_modular_clips", {
-        match_count: 1,
-        query_embedding: embedding,
-        match_threshold: -1.0,
-      });
-
-    if (matchError) {
-      throw matchError;
-    }
-
-    return [{ video_url: data[0].video_url }];
-  } catch (error) {
-    console.error("Error matching modular clips:", error);
-    throw error;
-  }
-});
-
-// Step 5: Process the video to trim based on the hook visual timestamp and matched video URL
-const trimmedHookVisual1FileUrlResult = await step.run("process-hook-visual-iteration", async () => {
-  try {
-    const processedVideoUrl = await trimOriginalVideoHook(
-      event.data.originalFileUrl,
-      event.data.hooktimestamp
-    );
-    console.log("Processed video URL:", processedVideoUrl);
-    return processedVideoUrl;
-  } catch (error) {
-    console.error("Error processing video:", error);
-    throw error;
-  }
-});
-
-// Step 6: Concatenate the hook visual url 1 with the trimmed original video body
-const concatenatedHookVisual1 = await step.run("concatenate-videos", async () => {
-  try {
-    const concatenatedVideoUrl = await concatenateVideos(
-      gpt1HookVisualUrlResult[0].video_url,
-      trimmedHookVisual1FileUrlResult
-    );
-    console.log("Concatenated video URL:", concatenatedVideoUrl);
-    return concatenatedVideoUrl;
-  } catch (error) {
-    console.error("Error concatenating videos:", error);
-    throw error;
-  }
-});
-
-// Step 7: Add captions to the concatenated video
-const captionedHookVisualVideoUrl = await step.run("caption-video", async () => {
-  try {
-    console.log("Value passed to captionVideo function:", concatenatedHookVisual1);
-    const captionedVideo = await captionVideo(concatenatedHookVisual1);
-    return captionedVideo;
-  } catch (error) {
-    console.error("Error adding captions to video:", error);
-    throw error;
-  }
-});
-
-return {
-  transcriptionResponse,
-  gpt3TranscriptionAnalysisResult,
-  gptHookVisualDescriptionResult,
-  gpt1HookVisualUrlResult,
-  trimmedHookVisual1FileUrlResult,
-  concatenatedHookVisual1,
-  captionedHookVisualVideoUrl
-};
-  }
-);
