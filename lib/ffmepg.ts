@@ -6,6 +6,9 @@ import fs from 'fs';
 import path from 'path';
 import { transcribeAudioFromUrlSRT } from '@/lib/deepgram';
 
+export const runtime = 'nodejs';
+
+
 export async function trimOriginalVideoHook(originalFileUrl: string, hooktimestamp: string): Promise<string> {
   const supabase = createClient();
   console.log('Supabase client created.');

@@ -3,6 +3,7 @@ const { VertexAI } = require('@google-cloud/vertexai');
 const fetch = (...args: any[]) => import('node-fetch').then(({ default: fetch }) => fetch(...args as [any]));
 import { compressVideoAndReturnBase64 } from './ffmepg';
 import { AxiosError } from 'axios';
+export const runtime = 'nodejs';
 
 
 // Initialize Vertex with your Cloud project and location

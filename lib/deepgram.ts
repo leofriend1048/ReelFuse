@@ -5,6 +5,8 @@ import { createClient, srt } from "@deepgram/sdk";
 const deepgramApiKey = process.env.DEEPGRAM_API_KEY;
 const deepgram = createClient(deepgramApiKey);
 
+export const runtime = 'nodejs';
+
 export async function transcribeAudioFromUrl(originalFileUrl: string) {
   try {
     const { result, error } = await deepgram.listen.prerecorded.transcribeUrl(
