@@ -54,12 +54,40 @@ export const videoLibraryProcessing = inngest.createFunction(
     if (videoDuration <= 5) {
       console.log('Video duration is 5 seconds or less. Proceeding with normal processing.');
       // Generate poster for the video
-      const posterUrl = await generatePoster(publicURL);
+      const generatePosterResponse = await fetch('https://us-central1-reel-fuse.cloudfunctions.net/generatePoster', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ videoUrl: publicURL, bucketName: 'poster_urls' }),
+      });
+
+      if (!generatePosterResponse.ok) {
+        throw new Error(`HTTP error! status: ${generatePosterResponse.status}`);
+      }
+
+      const posterData = await generatePosterResponse.json();
+      const posterUrl = posterData.posterUrl; 
+      console.log('Poster URL:', posterUrl);
+
       // Fetch blur data URL
       const blurDataUrl = await fetchBlurDataUrl(posterUrl);
 
-      // Proceed as normal
-      const visualDescription = await googleDescriptionVisuals(publicURL);
+      // Make a POST request to the googleDescriptionVisuals endpoint
+      const descriptionResponse = await fetch('https://us-central1-reel-fuse.cloudfunctions.net/googleDescriptionVisuals', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: publicURL }),
+      });
+
+      if (!descriptionResponse.ok) {
+        throw new Error(`HTTP error! status: ${descriptionResponse.status}`);
+      }
+
+      const descriptionData = await descriptionResponse.json();
+      const visualDescription = descriptionData.description;
       console.log('Visual Description:', visualDescription);
 
       const embeddingResult = await openai.embeddings.create({
@@ -86,10 +114,22 @@ export const videoLibraryProcessing = inngest.createFunction(
     } else {
       console.log('Video duration is more than 5 seconds. Proceeding with timestamp processing and trimming.');
       // If video is more than 5 seconds long
-      const timestamps = await googleTimestampProcessing(publicURL);
+      const timestampResponse = await fetch('https://us-central1-reel-fuse.cloudfunctions.net/googleTimestampProcessing', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ publicURL: publicURL }),
+      });
+
+      if (!timestampResponse.ok) {
+        throw new Error(`HTTP error! status: ${timestampResponse.status}`);
+      }
+
+      const timestamps = await timestampResponse.json();
       console.log('Timestamps for trimming:', timestamps);
 
-      const trimResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/trim-videos`, {
+      const trimResponse = await fetch(`https://us-central1-reel-fuse.cloudfunctions.net/trimVideos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,11 +157,37 @@ export const videoLibraryProcessing = inngest.createFunction(
         console.log('Processing trimmed video URL:', trimmedVideoURL);
 
         // Generate poster for the trimmed video
-        const posterUrl = await generatePoster(trimmedVideoURL);
+        const generatePosterResponse = await fetch('https://us-central1-reel-fuse.cloudfunctions.net/generatePoster', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ videoUrl: trimmedVideoURL, bucketName: 'poster_urls' }),
+        });
+
+        if (!generatePosterResponse.ok) {
+          throw new Error(`HTTP error! status: ${generatePosterResponse.status}`);
+        }
+
+        const posterData = await generatePosterResponse.json();
+        const posterUrl = posterData.posterUrl;
         // Fetch blur data URL
         const blurDataUrl = await fetchBlurDataUrl(posterUrl);
 
-        const trimmedVisualDescription = await googleDescriptionVisuals(trimmedVideoURL);
+        const descriptionResponse = await fetch('https://us-central1-reel-fuse.cloudfunctions.net/googleDescriptionVisuals', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ url: trimmedVideoURL }),
+        });
+
+        if (!descriptionResponse.ok) {
+          throw new Error(`HTTP error! status: ${descriptionResponse.status}`);
+        }
+
+        const descriptionData = await descriptionResponse.json();
+        const trimmedVisualDescription = descriptionData.description;
         console.log('Trimmed Visual Description:', trimmedVisualDescription);
 
         const trimmedEmbeddingResult = await openai.embeddings.create({

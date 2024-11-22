@@ -45,9 +45,27 @@ async function fetchVideoAsBase64(publicURL: string): Promise<string> {
 
 // Function to generate content with a given video file URL
 export async function googleDescriptionVisuals(publicURL: string) {
-  console.log(`googleDescriptionVisuals: Fetching and converting video from URL: ${publicURL}`);
-  
-  const base64Video = await compressVideoAndReturnBase64(publicURL);
+  console.log(`googleDescriptionVisuals: Requesting video compression for URL: ${publicURL}`);
+
+  // Make a POST request to the compression endpoint
+  const compressionResponse = await fetch('https://us-central1-reel-fuse.cloudfunctions.net/compressVideoAndReturnBase64', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ publicURL }),
+  });
+
+  if (!compressionResponse.ok) {
+    throw new Error(`Failed to compress video: ${compressionResponse.statusText}`);
+  }
+
+  const { compressedVideoUrl } = await compressionResponse.json();
+  console.log(`googleDescriptionVisuals: Received compressed video URL: ${compressedVideoUrl}`);
+
+  // Fetch the compressed video and convert it to base64
+  const base64Video = await fetchVideoAsBase64(compressedVideoUrl);
+  console.log(`googleDescriptionVisuals: Compressed video fetched and converted to base64`);
 
   console.log(`googleDescriptionVisuals: Instantiating generative model with model name: ${model}`);
   // Instantiate the models

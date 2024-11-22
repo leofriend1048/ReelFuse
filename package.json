@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "start": "next start",
     "tune": "ts-node -O {\\\"module\\\":\\\"commonjs\\\"} scripts/fine-tune.ts",
     "lint": "next lint"
   },
