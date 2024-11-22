@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import ffmpeg from 'fluent-ffmpeg';
+const { getVideoDurationInSeconds } = require('get-video-duration');
 
 export const runtime = 'nodejs';
 
@@ -14,8 +14,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const duration = await calculateVideoDuration(videoUrl);
-    
+    const durationInSeconds = await getVideoDurationInSeconds(videoUrl);
+    const minutes = Math.floor(durationInSeconds / 60);
+    const seconds = Math.floor(durationInSeconds % 60);
+    const duration = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
     return NextResponse.json({ duration });
   } catch (error) {
     console.error('Error processing video duration:', error);
@@ -24,27 +27,4 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-async function calculateVideoDuration(videoUrl: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    ffmpeg.ffprobe(videoUrl, (err, metadata) => {
-      if (err) {
-        console.error('Error retrieving video duration:', err);
-        return reject(err);
-      }
-
-      const durationInSeconds = metadata.format.duration;
-      if (durationInSeconds === undefined) {
-        return reject(new Error('Duration is undefined'));
-      }
-      
-      const minutes = Math.floor(durationInSeconds / 60);
-      const seconds = Math.floor(durationInSeconds % 60);
-      const formattedDuration = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-      
-      console.log(`Calculated video duration: ${formattedDuration}`);
-      resolve(formattedDuration);
-    });
-  });
 }
