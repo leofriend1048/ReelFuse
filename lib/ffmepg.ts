@@ -1,12 +1,10 @@
-"use server"
+'use server'
 import ffmpeg from 'fluent-ffmpeg';
 import { createClient } from '@/utils/supabase/server';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import path from 'path';
 import { transcribeAudioFromUrlSRT } from '@/lib/deepgram';
-
-export const runtime = 'nodejs';
 
 
 export async function trimOriginalVideoHook(originalFileUrl: string, hooktimestamp: string): Promise<string> {

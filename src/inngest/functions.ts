@@ -4,7 +4,6 @@ import { gpt3TranscriptionAnalysis, gptHookVisualDescription } from "@/lib/opena
 import { trimOriginalVideoHook, concatenateVideos, captionVideo, generatePoster, calculateVideoDuration } from "@/lib/ffmepg";
 import OpenAI from 'openai';
 import { createClient } from '@/utils/supabase/client';
-import { googleDescriptionVisuals, googleTimestampProcessing } from "@/lib/googlecloud";
 import fetch from 'node-fetch';
 
 const supabase = createClient();
