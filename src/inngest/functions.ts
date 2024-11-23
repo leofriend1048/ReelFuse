@@ -126,7 +126,7 @@ export const videoLibraryProcessing = inngest.createFunction(
       const timestamps = await timestampResponse.json();
       console.log('Timestamps for trimming:', timestamps);
 
-      const trimResponse = await fetch(`https://us-central1-reel-fuse.cloudfunctions.net/trimVideos`, {
+      const trimResponse = await fetch(`https://us-central1-reel-fuse.cloudfunctions.net/trimVideos-1`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
