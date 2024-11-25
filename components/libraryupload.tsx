@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { useDropzone } from 'react-dropzone';
 import { motion } from "framer-motion";
 import { Upload, X, Loader2, AlertCircle } from 'lucide-react';
@@ -283,24 +284,24 @@ export default function LibraryUpload() {
         toast.success(`Processed Dropbox file: ${file.name} (${duration})`);
       } else {
         const fileExtension = file.name.split('.').pop();
-        const filePath = `${Date.now()}.${fileExtension}`;
+        const uniqueFilename = `${uuidv4()}.${fileExtension}`;
         
         const { error: uploadError } = await supabase.storage
           .from('modular_clips')
-          .upload(filePath, file, {
-            cacheControl: '604800',
+          .upload(uniqueFilename, file, {
+            cacheControl: '604800', // 7-day caching
           });
-
+  
         if (uploadError) throw new Error(uploadError.message);
-
+  
         setUploadProgress(prev => ({
           ...prev,
           [file.name]: 100
         }));
-
-        const publicURL = `https://uwfllbptpdqoovbeizya.supabase.co/storage/v1/object/public/modular_clips/${filePath}`;
+  
+        const publicURL = `https://uwfllbptpdqoovbeizya.supabase.co/storage/v1/object/public/modular_clips/${uniqueFilename}`;
         const duration = await getLocalVideoDuration(file);
-
+  
         await inngest.send({
           name: "upload/video.received",
           data: {
@@ -316,6 +317,7 @@ export default function LibraryUpload() {
       throw new Error(`Failed to process ${file.name}: ${error.message}`);
     }
   };
+  
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (isUploading) return;
