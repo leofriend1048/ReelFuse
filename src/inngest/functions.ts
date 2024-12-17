@@ -6,7 +6,7 @@ import fetch from 'node-fetch';
 
 const supabase = createClient();
 const openai = new OpenAI({
-  apiKey: "sk-proj-dOGjk0Ag2oXQxjweX0JDT3BlbkFJ70Xy4sHsKdSRiyEYqI2B",
+  apiKey: "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",
   dangerouslyAllowBrowser: true,
 });
 
