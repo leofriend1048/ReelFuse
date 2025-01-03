@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::selection {
+    color: white;
+    background: #1890FF;
+  }
+  .z-back {
+    z-index: -1;
+  }
+  
+.cl-internal-b3fm6y {
+  display: none;
+}
