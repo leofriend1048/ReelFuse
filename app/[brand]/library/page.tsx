@@ -508,7 +508,11 @@ export default function Chat() {
             onValueChange={setSelectedCreator}
           />
 
-          
+          <TagFilter
+            brand={brand as string}
+            onTagSelect={setSelectedTag}
+            selectedTag={selectedTag}
+          />
 
           <Button
             variant={isSelectionMode ? "secondary" : "outline"}
