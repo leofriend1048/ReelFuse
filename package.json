@@ -85,6 +85,7 @@
     "node-cron": "^3.0.3",
     "node-fetch": "^2.7.0",
     "openai": "^4.70.2",
+    "os-browserify": "^0.3.0",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-day-picker": "^8.10.1",

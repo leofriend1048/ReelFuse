@@ -7,6 +7,9 @@ const nextConfig = {
       config.plugins.push(new NodePolyfillPlugin());
     }
 
+    // Add a fallback for node: protocol imports
+    config.resolve.fallback = { ...config.resolve.fallback, os: require.resolve('os-browserify/browser') };
+
     // Further custom webpack configuration here
 
     return config;
