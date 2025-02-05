@@ -117,8 +117,8 @@ importers:
         specifier: ^11.11.11
         version: 11.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       inngest:
-        specifier: ^3.31.3
-        version: 3.31.3(@vercel/node@3.0.12)(express@4.21.2)(next@14.2.23(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(typescript@5.6.3)
+        specifier: ^3.31.4-pr-834.3
+        version: 3.31.4-pr-834.3(@vercel/node@3.0.12)(express@4.21.2)(next@14.2.23(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(typescript@5.6.3)
       lucide-react:
         specifier: ^0.474.0
         version: 0.474.0(react@18.3.1)
@@ -2731,8 +2731,8 @@ packages:
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
 
-  inngest@3.31.3:
-    resolution: {integrity: sha512-lWvWi51rdJrAw+4hwEaR0eL5JnLy5vWOcGzOzoa9oP5FjLzkl1ynnqQFwsE6/eMYL8Q8Z68qHjk53blZEz3ZnQ==}
+  inngest@3.31.4-pr-834.3:
+    resolution: {integrity: sha512-hT8c4yeDFHRHwR1UGpa7cQE62Ghqmmt9BaOUgj1DXf6PrOke+lEf3wZLak/EtUEMrJ9/vIOpr1MMEKffvYy92g==}
     engines: {node: '>=14'}
     peerDependencies:
       '@sveltejs/kit': '>=1.27.3'
@@ -7184,7 +7184,7 @@ snapshots:
 
   inherits@2.0.4: {}
 
-  inngest@3.31.3(@vercel/node@3.0.12)(express@4.21.2)(next@14.2.23(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(typescript@5.6.3):
+  inngest@3.31.4-pr-834.3(@vercel/node@3.0.12)(express@4.21.2)(next@14.2.23(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(typescript@5.6.3):
     dependencies:
       '@bufbuild/protobuf': 2.2.3
       '@inngest/ai': 0.0.0
