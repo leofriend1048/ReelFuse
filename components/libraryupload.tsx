@@ -9,7 +9,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
-import { inngest } from '@/src/inngest/client';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -271,52 +270,57 @@ export default function LibraryUpload() {
 
   const uploadFile = async (file: File | DropboxFile) => {
     try {
-      if ('isDropbox' in file) {
-        const duration = await getVideoDuration(file.link);
-        await inngest.send({
-          name: "upload/video.received",
-          data: {
-            publicURL: file.link,
-            duration,
-            brand,
-          },
-        });
-        toast.success(`Processed Dropbox file: ${file.name} (${duration})`);
+      let publicURL: string;
+      let duration: string;
+  
+      if ("isDropbox" in file) {
+        publicURL = file.link;
+        duration = await getVideoDuration(file.link);
       } else {
-        const fileExtension = file.name.split('.').pop();
+        const fileExtension = file.name.split(".").pop();
         const uniqueFilename = `${uuidv4()}.${fileExtension}`;
-        
+  
         const { error: uploadError } = await supabase.storage
-          .from('modular_clips')
+          .from("modular_clips")
           .upload(uniqueFilename, file, {
-            cacheControl: '604800', // 7-day caching
+            cacheControl: "604800", // 7-day caching
           });
   
         if (uploadError) throw new Error(uploadError.message);
   
-        setUploadProgress(prev => ({
+        setUploadProgress((prev) => ({
           ...prev,
-          [file.name]: 100
+          [file.name]: 100,
         }));
   
-        const publicURL = `https://uwfllbptpdqoovbeizya.supabase.co/storage/v1/object/public/modular_clips/${uniqueFilename}`;
-        const duration = await getLocalVideoDuration(file);
-  
-        await inngest.send({
-          name: "upload/video.received",
-          data: {
-            publicURL,
-            duration,
-            brand,
-          },
-        });
-        toast.success(`Uploaded: ${file.name} (${duration})`);
+        publicURL = `https://uwfllbptpdqoovbeizya.supabase.co/storage/v1/object/public/modular_clips/${uniqueFilename}`;
+        duration = await getLocalVideoDuration(file);
       }
+  
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const response = await fetch(`${API_BASE_URL}/api/inngest-upload`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          publicURL,
+          duration,
+          brand,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to trigger Inngest event");
+      }
+  
+      toast.success(`Uploaded: ${file.name} (${duration})`);
     } catch (error: any) {
-      console.error('Error processing file:', error);
+      console.error("Error processing file:", error);
       throw new Error(`Failed to process ${file.name}: ${error.message}`);
     }
   };
+  
   
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {

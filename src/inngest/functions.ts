@@ -1,8 +1,6 @@
 import { inngest } from "@/src/inngest/client";
-import { gpt3TranscriptionAnalysis, gptHookVisualDescription } from "@/lib/openai"; 
 import OpenAI from "openai";
 import { createClient } from "@/utils/supabase/client";
-import fetch from "node-fetch";
 import { uploadVideoToMux } from "@/lib/mux";
 
 // Initialize Supabase and OpenAI clients
