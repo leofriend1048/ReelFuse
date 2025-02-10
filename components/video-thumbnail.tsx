@@ -24,12 +24,13 @@ const VideoThumbnail = ({ videoUrl, posterUrl, duration, blurDataURL, onLoad, pl
 
   // Preload images for smoother scrubbing
   const preloadImages = useCallback(() => {
-    const numImages = 10; // Number of images to preload
-    const interval = Math.max(1, Math.floor(durationInSeconds / numImages));
+    const numImages = 40; // Number of images to preload, increased to account for quarters
+    const interval = durationInSeconds / numImages;
     
     for (let time = 1; time <= durationInSeconds; time += interval) {
-      const url = `https://image.mux.com/${playbackId}/thumbnail.webp?time=${time}`;
-      preloadedImages.current.set(time, url);
+      const roundedTime = Math.round(time * 4) / 4; // Round to nearest quarter
+      const url = `https://image.mux.com/${playbackId}/thumbnail.webp?time=${roundedTime}`;
+      preloadedImages.current.set(roundedTime, url);
       const img = new window.Image();
       img.src = url;
     }
@@ -79,7 +80,8 @@ const VideoThumbnail = ({ videoUrl, posterUrl, duration, blurDataURL, onLoad, pl
     }
 
     debounceTimerRef.current = setTimeout(() => {
-      setCurrentTime(Math.max(1, Math.round(percentage * durationInSeconds)));
+      const newTime = Math.max(1, percentage * durationInSeconds);
+      setCurrentTime(Math.round(newTime * 4) / 4); // Round to nearest quarter
     }, 50);
   };
 
@@ -124,7 +126,6 @@ const VideoThumbnail = ({ videoUrl, posterUrl, duration, blurDataURL, onLoad, pl
             onLoad={onLoad}
             placeholder={blurDataURL ? "blur" : "empty"}
             blurDataURL={blurDataURL}
-            unoptimized={isHovering}
           />
         </div>
       </div>

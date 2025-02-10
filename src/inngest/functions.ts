@@ -2,6 +2,8 @@ import { inngest } from "@/src/inngest/client";
 import OpenAI from "openai";
 import { createClient } from "@/utils/supabase/client";
 import { uploadVideoToMux } from "@/lib/mux";
+import { v4 as uuidv4 } from 'uuid';
+
 
 // Initialize Supabase and OpenAI clients
 const supabase = createClient();
@@ -9,13 +11,114 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Helper: Convert "HH:MM:SS" to seconds.
+// Constants for video formats and CDN identifiers
+const SUPPORTED_VIDEO_FORMATS = ['mp4', 'mov', 'avi', 'wmv'];
+const MP4_FORMAT = 'mp4';
+const DROPBOX_CDN_IDENTIFIER = 'dropboxusercontent.com';
+const SUPABASE_CDN_IDENTIFIER = 'supabase.co';
+
+// Helper: Upload file to Supabase from URL
+const uploadToSupabase = async (url: string, fileExtension: string): Promise<string> => {
+  try {
+    // Download the file from URL
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const uniqueFilename = `${uuidv4()}.${fileExtension}`;
+
+    // Upload to Supabase
+    const { error: uploadError } = await supabase.storage
+      .from("modular_clips")
+      .upload(uniqueFilename, blob, {
+        cacheControl: "604800",
+      });
+
+    if (uploadError) throw new Error(uploadError.message);
+
+    // Return the new Supabase URL
+    return `https://uwfllbptpdqoovbeizya.supabase.co/storage/v1/object/public/modular_clips/${uniqueFilename}`;
+  } catch (error) {
+    console.error('Error uploading to Supabase:', error);
+    throw error;
+  }
+};
+
+// Helper: Convert video to MP4 if needed and ensure it's hosted on Supabase
+const convertToMP4IfNeeded = async (url: string): Promise<string> => {
+  console.log('Processing video URL:', url);
+  
+  const fileExtension = url.split('.').pop()?.toLowerCase();
+  const isDropboxUrl = url.includes(DROPBOX_CDN_IDENTIFIER);
+  const isSupabaseUrl = url.includes(SUPABASE_CDN_IDENTIFIER);
+  
+  // If it's not a supported format, return the original URL
+  if (!fileExtension || !SUPPORTED_VIDEO_FORMATS.includes(fileExtension)) {
+    console.log('Unsupported file format:', fileExtension);
+    return url;
+  }
+
+  try {
+    // Case 1: Dropbox URL with MP4 format - Upload to Supabase
+    if (isDropboxUrl && fileExtension === MP4_FORMAT) {
+      console.log('Processing Dropbox MP4 file - uploading to Supabase');
+      return await uploadToSupabase(url, MP4_FORMAT);
+    }
+    
+    // Case 2: Non-MP4 format (from either Dropbox or Supabase) - Convert
+    if (fileExtension !== MP4_FORMAT) {
+      console.log('Converting non-MP4 file to MP4');
+      const response = await fetch(`https://us-central1-reel-fuse.cloudfunctions.net/ConvertToMP4`, {
+        method: 'POST',
+        body: JSON.stringify({ videoUrl: url }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Failed to convert video to MP4:', errorText);
+        throw new Error(`Failed to convert video to MP4. Status: ${response.status}. Error: ${errorText}`);
+      }
+
+      const responseBody = await response.text();
+      console.log('Response from ConvertToMP4 cloud function:', responseBody);
+
+      let convertedUrl;
+      try {
+        const jsonResponse = JSON.parse(responseBody);
+        convertedUrl = jsonResponse.url;
+      } catch (error) {
+        console.error('Error parsing JSON response from ConvertToMP4 cloud function:', error);
+        throw new Error('Failed to parse JSON response from cloud function');
+      }
+      
+      // The converted URL is already a Supabase URL, so return it directly
+      return convertedUrl;
+    }
+    
+    // Case 3: Already an MP4 on Supabase
+    if (isSupabaseUrl && fileExtension === MP4_FORMAT) {
+      console.log('File is already an MP4 on Supabase');
+      return url;
+    }
+    
+    // Case 4: MP4 from another source - Upload to Supabase
+    console.log('Uploading MP4 from external source to Supabase');
+    return await uploadToSupabase(url, MP4_FORMAT);
+    
+  } catch (error) {
+    console.error('Error in convertToMP4IfNeeded:', error);
+    throw error;
+  }
+};
+
+// Helper: Convert "HH:MM:SS" to seconds
 const convertDurationToSeconds = (duration: string): number => {
   const [hours, minutes, seconds] = duration.split(":").map(Number);
   return hours * 3600 + minutes * 60 + seconds;
 };
 
-// Helper: Fetch a blur data URL from a poster URL.
+// Helper: Fetch a blur data URL from a poster URL
 const fetchBlurDataUrl = async (posterUrl: string): Promise<string> => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/createBlurDataUrl`,
@@ -49,7 +152,9 @@ async function processTrimmedVideo(
         ageData,
         posterData,
         visualDescription,
-        durationResult
+        durationResult,
+        abRollData,
+        shotTypeData
       ] = await Promise.all([
         // Step 3: Upload video to Mux with error tracking
         (async () => {
@@ -126,6 +231,42 @@ async function processTrimmedVideo(
           }
           const data = await res.json();
           return data.duration;
+        })(),
+        // New Step: Determine A/B Roll
+        (async () => {
+          const res = await fetch(
+            "https://us-central1-reel-fuse.cloudfunctions.net/googleVideoABRoll",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ url: trimmedVideoURL }),
+            }
+          );
+          if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(`Failed to determine A/B Roll. Status: ${res.status}. Error: ${errorText}`);
+          }
+          return res.json();
+        })(),
+        // New Step: Get shot types from trimmed video
+        (async () => {
+          const res = await fetch(
+            "https://us-central1-reel-fuse.cloudfunctions.net/googleVideoShotType",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ 
+                url: trimmedVideoURL,
+                brand: brand,
+                product: brand
+              }),
+            }
+          );
+          if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(`Failed to get shot types. Status: ${res.status}. Error: ${errorText}`);
+          }
+          return res.json();
         })()
       ]);
 
@@ -162,6 +303,8 @@ async function processTrimmedVideo(
         duration: durationResult,
         mux_asset_id: muxResult.mux_asset_id,
         mux_playback_id: muxResult.mux_playback_id,
+        ab_roll: abRollData.type,
+        shot_types: shotTypeData.shot_types,
         ...(talentAge !== "N/A" && { talent_age: talentAge }),
       };
 
@@ -200,10 +343,13 @@ export const videoLibraryProcessing = inngest.createFunction(
       
       console.log(`Processing video: Duration=${videoDuration}s, URL=${publicURL}`);
 
+      // Convert video to MP4 if needed before any processing
+      const processedURL = await convertToMP4IfNeeded(publicURL);
+      console.log('Video format processed:', processedURL);
+
       if (videoDuration <= 5) {
         console.log("Processing short video (≤5s)");
-        // Short video processing logic...
-        // [Previous code remains the same but with added logging]
+        // This is where we'll implement logic for shorter videos (upload to Mux, DB, classify, etc)
       } else {
         console.log("Processing long video (>5s)");
         
@@ -215,7 +361,7 @@ export const videoLibraryProcessing = inngest.createFunction(
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ publicURL }),
+              body: JSON.stringify({ publicURL: processedURL }),
             }
           );
           
@@ -236,7 +382,7 @@ export const videoLibraryProcessing = inngest.createFunction(
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ videoUrl: publicURL, timestamps }),
+              body: JSON.stringify({ videoUrl: processedURL, timestamps }),
             }
           );
           
@@ -270,7 +416,7 @@ export const videoLibraryProcessing = inngest.createFunction(
       };
     } catch (error) {
       console.error("Video processing failed:", error);
-      throw error; // Re-throw to mark the function as failed in Inngest
+      throw error;
     }
   }
 );

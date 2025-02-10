@@ -36,8 +36,8 @@ const formSchema = z.object({
   ]))
     .refine((files) => files.length > 0, 'At least one file is required')
     .refine((files) => files.every((file) => 
-      file instanceof File ? file.size <= 5000000000 : true
-    ), 'Max file size is 5GB for each file'),
+      file instanceof File ? file.size <= 500000000 : true
+    ), 'Max file size is 500MB for each file'),
 });
 
 type DropboxFile = {
@@ -320,8 +320,6 @@ export default function LibraryUpload() {
       throw new Error(`Failed to process ${file.name}: ${error.message}`);
     }
   };
-  
-  
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (isUploading) return;
@@ -482,7 +480,7 @@ export default function LibraryUpload() {
                     or click to browse your files
                   </p>
                   <p className="mt-2 text-xs text-muted-foreground">
-                    MP4, MOV, AVI, WMV up to 5GB each
+                    MP4, MOV, AVI, WMV up to 500MB each
                   </p>
                 </div>
               </div>
