@@ -325,7 +325,10 @@ async function processTrimmedVideo(
 }
 
 export const videoLibraryProcessing = inngest.createFunction(
-  { id: "video-library-processing" },
+  {
+    id: "video-library-processing",
+    concurrency: 5,
+  },
   { event: "upload/video.received" },
   async ({ event, step }) => {
     console.log("videoLibraryProcessing triggered with event:", {

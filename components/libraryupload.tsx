@@ -337,7 +337,7 @@ export default function LibraryUpload() {
       }));
 
       if (errors.length === 0) {
-        toast.success("All files have been processed successfully");
+        toast.success("All files have been uploaded successfully");
         setIsOpen(false);
       } else {
         toast.error(`Some files failed to process: ${errors.join(', ')}`);
