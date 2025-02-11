@@ -276,7 +276,8 @@ async function processTrimmedVideo(
       console.log('Creating OpenAI embedding...');
       const embeddingResp = await openai.embeddings.create({
         input: visualDescription,
-        model: "text-embedding-3-small",
+        model: "text-embedding-3-large",
+        dimensions: 2000
       }).catch(error => {
         console.error('OpenAI embedding creation failed:', error);
         throw error;

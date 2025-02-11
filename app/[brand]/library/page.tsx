@@ -287,7 +287,8 @@ export default function Chat() {
       if (term.trim()) {
         const result = await openai.embeddings.create({
           input: term,
-          model: "text-embedding-3-small",
+          model: "text-embedding-3-large",
+          dimensions: 2000
         });
         const [{ embedding }] = result.data;
 
