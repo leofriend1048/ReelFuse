@@ -66,26 +66,41 @@ const convertToMP4IfNeeded = async (url: string): Promise<string> => {
     // Case 2: Non-MP4 format (from either Dropbox or Supabase) - Convert
     if (fileExtension !== MP4_FORMAT) {
       console.log('Converting non-MP4 file to MP4');
-      const response = await fetch(`https://us-central1-reel-fuse.cloudfunctions.net/ConvertToMP4`, {
-        method: 'POST',
-        body: JSON.stringify({ videoUrl: url }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Failed to convert video to MP4:', errorText);
-        throw new Error(`Failed to convert video to MP4. Status: ${response.status}. Error: ${errorText}`);
-      }
+      const convertToMP4 = async (attempt = 1) => {
+        const response = await fetch(`https://us-central1-reel-fuse.cloudfunctions.net/ConvertToMP4`, {
+          method: 'POST',
+          body: JSON.stringify({ videoUrl: url }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
-      const responseBody = await response.text();
+        if (!response.ok) {
+          if (response.status === 524 && attempt < 3) {
+            console.warn(`Attempt ${attempt}: Cloud function timed out with 524, retrying...`);
+            await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds before retrying
+            return convertToMP4(attempt + 1);
+          } else {
+            const errorText = await response.text();
+            console.error('Failed to convert video to MP4:', errorText);
+            throw new Error(`Failed to convert video to MP4. Status: ${response.status}. Error: ${errorText}`);
+          }
+        }
+
+        return response.text();
+      };
+
+      const responseBody = await Promise.race([
+        convertToMP4(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Conversion to MP4 timed out after 10 minutes')), 600000)) // 10 minute timeout
+      ]);
+
       console.log('Response from ConvertToMP4 cloud function:', responseBody);
 
       let convertedUrl;
       try {
-        const jsonResponse = JSON.parse(responseBody);
+        const jsonResponse = JSON.parse(responseBody as string); // Cast responseBody to string to satisfy TypeScript
         convertedUrl = jsonResponse.url;
       } catch (error) {
         console.error('Error parsing JSON response from ConvertToMP4 cloud function:', error);
