@@ -297,7 +297,7 @@ async function processTrimmedVideo(
       const insertData = {
         video_url: trimmedVideoURL,
         description: visualDescription,
-        embedding: trimmedEmbedding,
+        embedding_2000d: trimmedEmbedding,
         poster_url: posterUrl,
         blur_data_url: blurDataUrl,
         brand,
