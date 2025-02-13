@@ -90,4 +90,4 @@ export async function POST(request: Request) {
   }
 }
 
-export const maxDuration = 300 // 5 minutes
+export const maxDuration = 60 // 60 seconds
