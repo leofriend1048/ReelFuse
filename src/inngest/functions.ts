@@ -92,59 +92,88 @@ export const convertToMP4IfNeeded = async (url: string): Promise<string> => {
         let buffer = '';
         const decoder = new TextDecoder();
         let convertedUrl = '';
+        let lastError = null;
 
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            
+            // If we have a converted URL and the stream is done, we can return
+            if (done && convertedUrl) {
+              return convertedUrl;
+            }
+            
+            // If stream is done but we don't have a URL, check for errors
+            if (done) {
+              if (lastError) {
+                throw new Error(lastError);
+              }
+              break;
+            }
 
-          // Append new data to buffer
-          buffer += decoder.decode(value, { stream: true });
+            // Append new data to buffer
+            buffer += decoder.decode(value, { stream: true });
 
-          // Process complete messages
-          const lines = buffer.split('\n');
-          buffer = lines.pop() || ''; // Keep the last incomplete line in buffer
+            // Process complete messages
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || ''; // Keep the last incomplete line in buffer
 
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              try {
-                const data = JSON.parse(line.slice(5));
-                if (data.error) {
-                  throw new Error(data.error);
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                try {
+                  const data = JSON.parse(line.slice(5));
+                  
+                  // Handle error messages
+                  if (data.error) {
+                    lastError = data.error;
+                    console.error('Conversion error:', data.error);
+                    continue;
+                  }
+
+                  // Handle completion
+                  if (data.status === 'Complete' && data.url) {
+                    convertedUrl = data.url;
+                    console.log('Received converted URL:', convertedUrl);
+                  }
+
+                  // Log progress
+                  if (data.status && data.progress) {
+                    console.log(`${data.status} ${data.progress}%`);
+                  }
+                } catch (e) {
+                  console.error('Error parsing SSE:', e);
+                  // Don't throw here, try to continue processing
                 }
-                if (data.status === 'Complete' && data.url) {
-                  convertedUrl = data.url;
-                }
-                // Log progress if needed
-                if (data.status && data.progress) {
-                  console.log(`${data.status} ${data.progress}%`);
-                }
-              } catch (e) {
-                console.error('Error parsing SSE:', e);
               }
             }
           }
-        }
 
-        // Process any remaining data in buffer
-        if (buffer.startsWith('data: ')) {
-          try {
-            const data = JSON.parse(buffer.slice(5));
-            if (data.error) {
-              throw new Error(data.error);
+          // Process any remaining data in buffer
+          if (buffer.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(buffer.slice(5));
+              if (data.error) {
+                lastError = data.error;
+              } else if (data.status === 'Complete' && data.url) {
+                convertedUrl = data.url;
+              }
+            } catch (e) {
+              console.error('Error parsing final SSE data:', e);
             }
-            if (data.status === 'Complete' && data.url) {
-              convertedUrl = data.url;
-            }
-          } catch (e) {
-            console.error('Error parsing final SSE data:', e);
           }
-        }
 
-        if (!convertedUrl) {
-          throw new Error('No converted URL received from the conversion service');
-        }
+          if (lastError) {
+            throw new Error(lastError);
+          }
 
-        return convertedUrl;
+          if (!convertedUrl) {
+            throw new Error('Conversion completed but no URL was received');
+          }
+
+          return convertedUrl;
+        } finally {
+          reader.releaseLock();
+        }
       };
 
       const convertedUrl = await convertToMP4();
