@@ -43,13 +43,14 @@ const uploadToSupabase = async (url: string, fileExtension: string): Promise<str
 };
 
 // Helper: Convert video to MP4 if needed and ensure it's hosted on Supabase
-export const convertToMP4IfNeeded = async (url: string): Promise<string> => {
+const convertToMP4IfNeeded = async (url: string): Promise<string> => {
   console.log('Processing video URL:', url);
   
   const fileExtension = url.split('.').pop()?.toLowerCase();
   const isDropboxUrl = url.includes(DROPBOX_CDN_IDENTIFIER);
   const isSupabaseUrl = url.includes(SUPABASE_CDN_IDENTIFIER);
   
+  // If it's not a supported format, return the original URL
   if (!fileExtension || !SUPPORTED_VIDEO_FORMATS.includes(fileExtension)) {
     console.log('Unsupported file format:', fileExtension);
     return url;
@@ -66,103 +67,47 @@ export const convertToMP4IfNeeded = async (url: string): Promise<string> => {
     if (fileExtension !== MP4_FORMAT) {
       console.log('Converting non-MP4 file to MP4');
 
-      const convertToMP4 = async (attempt = 1): Promise<string> => {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 600000); // 10 minute timeout
+      const convertToMP4 = async (attempt = 1) => {
+        const response = await fetch(`https://us-central1-reel-fuse.cloudfunctions.net/ConvertToMP4`, {
+          method: 'POST',
+          body: JSON.stringify({ videoUrl: url }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
-        try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/convert`, {
-            method: 'POST',
-            body: JSON.stringify({ videoUrl: url }),
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            signal: controller.signal
-          });
-
-          clearTimeout(timeoutId);
-
-          if (!response.ok) {
-            if (response.status === 524 && attempt < 3) {
-              console.warn(`Attempt ${attempt}: Conversion timed out with 524, retrying...`);
-              await new Promise(resolve => setTimeout(resolve, 2000));
-              return convertToMP4(attempt + 1);
-            } else {
-              const errorText = await response.text();
-              throw new Error(`Failed to convert video to MP4. Status: ${response.status}. Error: ${errorText}`);
-            }
+        if (!response.ok) {
+          if (response.status === 524 && attempt < 3) {
+            console.warn(`Attempt ${attempt}: Cloud function timed out with 524, retrying...`);
+            await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds before retrying
+            return convertToMP4(attempt + 1);
+          } else {
+            const errorText = await response.text();
+            console.error('Failed to convert video to MP4:', errorText);
+            throw new Error(`Failed to convert video to MP4. Status: ${response.status}. Error: ${errorText}`);
           }
-
-          const reader = response.body?.getReader();
-          if (!reader) throw new Error('No response body');
-
-          let buffer = '';
-          const decoder = new TextDecoder();
-
-          try {
-            while (true) {
-              const { done, value } = await reader.read();
-              
-              if (done) {
-                // Process any remaining data in buffer
-                if (buffer.trim()) {
-                  try {
-                    const data = JSON.parse(buffer.slice(5)); // Remove 'data: ' prefix
-                    if (data.status === 'Complete' && data.url) {
-                      return data.url;
-                    }
-                  } catch (e) {
-                    console.error('Error parsing final buffer:', e);
-                  }
-                }
-                throw new Error('Stream ended without receiving a URL');
-              }
-
-              buffer += decoder.decode(value, { stream: true });
-
-              // Process complete messages
-              const messages = buffer.split('\n\n');
-              buffer = messages.pop() || ''; // Keep the last incomplete message
-
-              for (const message of messages) {
-                if (message.startsWith('data: ')) {
-                  try {
-                    const data = JSON.parse(message.slice(6));
-                    
-                    if (data.error) {
-                      throw new Error(data.error);
-                    }
-
-                    if (data.status === 'Complete' && data.url) {
-                      return data.url;
-                    }
-
-                    if (data.status && data.progress) {
-                      console.log(`${data.status} ${data.progress}%`);
-                    }
-                  } catch (e) {
-                    console.error('Error parsing SSE message:', e, 'Message:', message);
-                  }
-                }
-              }
-            }
-          } finally {
-            reader.releaseLock();
-          }
-        } catch (error: unknown) {
-          clearTimeout(timeoutId);
-          if (error instanceof Error) {
-            if (error.name === 'AbortError') {
-              throw new Error('Conversion timed out after 10 minutes');
-            }
-            throw error;
-          }
-          throw new Error(typeof error === 'string' ? error : 'An unknown error occurred');
         }
+
+        return response.text();
       };
 
-      const convertedUrl = await convertToMP4();
-      console.log('Conversion completed, URL:', convertedUrl);
+      const responseBody = await Promise.race([
+        convertToMP4(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Conversion to MP4 timed out after 10 minutes')), 600000)) // 10 minute timeout
+      ]);
+
+      console.log('Response from ConvertToMP4 cloud function:', responseBody);
+
+      let convertedUrl;
+      try {
+        const jsonResponse = JSON.parse(responseBody as string); // Cast responseBody to string to satisfy TypeScript
+        convertedUrl = jsonResponse.url;
+      } catch (error) {
+        console.error('Error parsing JSON response from ConvertToMP4 cloud function:', error);
+        throw new Error('Failed to parse JSON response from cloud function');
+      }
+      
+      // The converted URL is already a Supabase URL, so return it directly
       return convertedUrl;
     }
     
@@ -176,12 +121,9 @@ export const convertToMP4IfNeeded = async (url: string): Promise<string> => {
     console.log('Uploading MP4 from external source to Supabase');
     return await uploadToSupabase(url, MP4_FORMAT);
     
-  } catch (error: unknown) {
+  } catch (error) {
     console.error('Error in convertToMP4IfNeeded:', error);
-    if (error instanceof Error) {
-      throw error;
-    }
-    throw new Error(typeof error === 'string' ? error : 'An unknown error occurred');
+    throw error;
   }
 };
 
