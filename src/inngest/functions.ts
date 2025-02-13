@@ -43,7 +43,7 @@ const uploadToSupabase = async (url: string, fileExtension: string): Promise<str
 };
 
 // Helper: Convert video to MP4 if needed and ensure it's hosted on Supabase
-const convertToMP4IfNeeded = async (url: string): Promise<string> => {
+export const convertToMP4IfNeeded = async (url: string): Promise<string> => {
   console.log('Processing video URL:', url);
   
   const fileExtension = url.split('.').pop()?.toLowerCase();
@@ -89,16 +89,21 @@ const convertToMP4IfNeeded = async (url: string): Promise<string> => {
         const reader = response.body?.getReader();
         if (!reader) throw new Error('No response body');
 
+        let buffer = '';
+        const decoder = new TextDecoder();
         let convertedUrl = '';
-        
+
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
 
-          // Parse the SSE data
-          const text = new TextDecoder().decode(value);
-          const lines = text.split('\n');
-          
+          // Append new data to buffer
+          buffer += decoder.decode(value, { stream: true });
+
+          // Process complete messages
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || ''; // Keep the last incomplete line in buffer
+
           for (const line of lines) {
             if (line.startsWith('data: ')) {
               try {
@@ -109,10 +114,29 @@ const convertToMP4IfNeeded = async (url: string): Promise<string> => {
                 if (data.status === 'Complete' && data.url) {
                   convertedUrl = data.url;
                 }
+                // Log progress if needed
+                if (data.status && data.progress) {
+                  console.log(`${data.status} ${data.progress}%`);
+                }
               } catch (e) {
                 console.error('Error parsing SSE:', e);
               }
             }
+          }
+        }
+
+        // Process any remaining data in buffer
+        if (buffer.startsWith('data: ')) {
+          try {
+            const data = JSON.parse(buffer.slice(5));
+            if (data.error) {
+              throw new Error(data.error);
+            }
+            if (data.status === 'Complete' && data.url) {
+              convertedUrl = data.url;
+            }
+          } catch (e) {
+            console.error('Error parsing final SSE data:', e);
           }
         }
 
