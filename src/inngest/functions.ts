@@ -50,7 +50,6 @@ const convertToMP4IfNeeded = async (url: string): Promise<string> => {
   const isDropboxUrl = url.includes(DROPBOX_CDN_IDENTIFIER);
   const isSupabaseUrl = url.includes(SUPABASE_CDN_IDENTIFIER);
   
-  // If it's not a supported format, return the original URL
   if (!fileExtension || !SUPPORTED_VIDEO_FORMATS.includes(fileExtension)) {
     console.log('Unsupported file format:', fileExtension);
     return url;
@@ -68,7 +67,7 @@ const convertToMP4IfNeeded = async (url: string): Promise<string> => {
       console.log('Converting non-MP4 file to MP4');
 
       const convertToMP4 = async (attempt = 1) => {
-        const response = await fetch(`https://us-central1-reel-fuse.cloudfunctions.net/ConvertToMP4`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/convert`, {
           method: 'POST',
           body: JSON.stringify({ videoUrl: url }),
           headers: {
@@ -78,36 +77,54 @@ const convertToMP4IfNeeded = async (url: string): Promise<string> => {
 
         if (!response.ok) {
           if (response.status === 524 && attempt < 3) {
-            console.warn(`Attempt ${attempt}: Cloud function timed out with 524, retrying...`);
-            await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds before retrying
+            console.warn(`Attempt ${attempt}: Conversion timed out with 524, retrying...`);
+            await new Promise(resolve => setTimeout(resolve, 2000));
             return convertToMP4(attempt + 1);
           } else {
             const errorText = await response.text();
-            console.error('Failed to convert video to MP4:', errorText);
             throw new Error(`Failed to convert video to MP4. Status: ${response.status}. Error: ${errorText}`);
           }
         }
 
-        return response.text();
+        const reader = response.body?.getReader();
+        if (!reader) throw new Error('No response body');
+
+        let convertedUrl = '';
+        
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          // Parse the SSE data
+          const text = new TextDecoder().decode(value);
+          const lines = text.split('\n');
+          
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(5));
+                if (data.error) {
+                  throw new Error(data.error);
+                }
+                if (data.status === 'Complete' && data.url) {
+                  convertedUrl = data.url;
+                }
+              } catch (e) {
+                console.error('Error parsing SSE:', e);
+              }
+            }
+          }
+        }
+
+        if (!convertedUrl) {
+          throw new Error('No converted URL received from the conversion service');
+        }
+
+        return convertedUrl;
       };
 
-      const responseBody = await Promise.race([
-        convertToMP4(),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Conversion to MP4 timed out after 10 minutes')), 600000)) // 10 minute timeout
-      ]);
-
-      console.log('Response from ConvertToMP4 cloud function:', responseBody);
-
-      let convertedUrl;
-      try {
-        const jsonResponse = JSON.parse(responseBody as string); // Cast responseBody to string to satisfy TypeScript
-        convertedUrl = jsonResponse.url;
-      } catch (error) {
-        console.error('Error parsing JSON response from ConvertToMP4 cloud function:', error);
-        throw new Error('Failed to parse JSON response from cloud function');
-      }
-      
-      // The converted URL is already a Supabase URL, so return it directly
+      const convertedUrl = await convertToMP4();
+      console.log('Conversion completed, URL:', convertedUrl);
       return convertedUrl;
     }
     
@@ -126,6 +143,7 @@ const convertToMP4IfNeeded = async (url: string): Promise<string> => {
     throw error;
   }
 };
+
 
 // Helper: Convert "HH:MM:SS" to seconds
 const convertDurationToSeconds = (duration: string): number => {
