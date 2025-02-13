@@ -66,113 +66,106 @@ export const convertToMP4IfNeeded = async (url: string): Promise<string> => {
     if (fileExtension !== MP4_FORMAT) {
       console.log('Converting non-MP4 file to MP4');
 
-      const convertToMP4 = async (attempt = 1) => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/convert`, {
-          method: 'POST',
-          body: JSON.stringify({ videoUrl: url }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          if (response.status === 524 && attempt < 3) {
-            console.warn(`Attempt ${attempt}: Conversion timed out with 524, retrying...`);
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            return convertToMP4(attempt + 1);
-          } else {
-            const errorText = await response.text();
-            throw new Error(`Failed to convert video to MP4. Status: ${response.status}. Error: ${errorText}`);
-          }
-        }
-
-        const reader = response.body?.getReader();
-        if (!reader) throw new Error('No response body');
-
-        let buffer = '';
-        const decoder = new TextDecoder();
-        let convertedUrl = '';
-        let lastError = null;
+      const convertToMP4 = async (attempt = 1): Promise<string> => {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 600000); // 10 minute timeout
 
         try {
-          while (true) {
-            const { done, value } = await reader.read();
-            
-            // If we have a converted URL and the stream is done, we can return
-            if (done && convertedUrl) {
-              return convertedUrl;
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/convert`, {
+            method: 'POST',
+            body: JSON.stringify({ videoUrl: url }),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            signal: controller.signal
+          });
+
+          clearTimeout(timeoutId);
+
+          if (!response.ok) {
+            if (response.status === 524 && attempt < 3) {
+              console.warn(`Attempt ${attempt}: Conversion timed out with 524, retrying...`);
+              await new Promise(resolve => setTimeout(resolve, 2000));
+              return convertToMP4(attempt + 1);
+            } else {
+              const errorText = await response.text();
+              throw new Error(`Failed to convert video to MP4. Status: ${response.status}. Error: ${errorText}`);
             }
-            
-            // If stream is done but we don't have a URL, check for errors
-            if (done) {
-              if (lastError) {
-                throw new Error(lastError);
+          }
+
+          const reader = response.body?.getReader();
+          if (!reader) throw new Error('No response body');
+
+          let buffer = '';
+          const decoder = new TextDecoder();
+          let convertedUrl: string | null = null;
+          let lastError: string | null = null;
+
+          try {
+            while (true) {
+              const { done, value } = await reader.read();
+              
+              if (done) {
+                if (convertedUrl) {
+                  return convertedUrl;
+                }
+                if (lastError) {
+                  throw new Error(lastError);
+                }
+                throw new Error('Stream ended without receiving a URL');
               }
-              break;
-            }
 
-            // Append new data to buffer
-            buffer += decoder.decode(value, { stream: true });
+              buffer += decoder.decode(value, { stream: true });
 
-            // Process complete messages
-            const lines = buffer.split('\n');
-            buffer = lines.pop() || ''; // Keep the last incomplete line in buffer
+              // Process complete messages
+              const messages = buffer.split('\n\n');
+              buffer = messages.pop() || ''; // Keep the last incomplete message
 
-            for (const line of lines) {
-              if (line.startsWith('data: ')) {
-                try {
-                  const data = JSON.parse(line.slice(5));
-                  
-                  // Handle error messages
-                  if (data.error) {
-                    lastError = data.error;
-                    console.error('Conversion error:', data.error);
-                    continue;
+              for (const message of messages) {
+                if (message.startsWith('data: ')) {
+                  try {
+                    const data = JSON.parse(message.slice(6));
+                    
+                    if (data.error) {
+                      lastError = data.error;
+                      console.error('Conversion error:', data.error);
+                      continue;
+                    }
+
+                    if (data.status === 'Complete' && data.url) {
+                      convertedUrl = data.url;
+                      console.log('Received converted URL:', convertedUrl);
+                      if (convertedUrl) {
+                        return convertedUrl;
+                      }
+                    }
+
+                    if (data.status && data.progress) {
+                      console.log(`${data.status} ${data.progress}%`);
+                    }
+                  } catch (e) {
+                    console.error('Error parsing SSE message:', e, 'Message:', message);
                   }
-
-                  // Handle completion
-                  if (data.status === 'Complete' && data.url) {
-                    convertedUrl = data.url;
-                    console.log('Received converted URL:', convertedUrl);
-                  }
-
-                  // Log progress
-                  if (data.status && data.progress) {
-                    console.log(`${data.status} ${data.progress}%`);
-                  }
-                } catch (e) {
-                  console.error('Error parsing SSE:', e);
-                  // Don't throw here, try to continue processing
                 }
               }
             }
+          } finally {
+            reader.releaseLock();
           }
 
-          // Process any remaining data in buffer
-          if (buffer.startsWith('data: ')) {
-            try {
-              const data = JSON.parse(buffer.slice(5));
-              if (data.error) {
-                lastError = data.error;
-              } else if (data.status === 'Complete' && data.url) {
-                convertedUrl = data.url;
-              }
-            } catch (e) {
-              console.error('Error parsing final SSE data:', e);
+          // This line is needed to satisfy TypeScript, though it should never be reached
+          // due to the while(true) loop above that always returns or throws
+          throw new Error('Stream processing ended unexpectedly');
+        } catch (error: unknown) {
+          clearTimeout(timeoutId);
+          if (error instanceof Error) {
+            if (error.name === 'AbortError') {
+              throw new Error('Conversion timed out after 10 minutes');
             }
+            throw error;
           }
-
-          if (lastError) {
-            throw new Error(lastError);
-          }
-
-          if (!convertedUrl) {
-            throw new Error('Conversion completed but no URL was received');
-          }
-
-          return convertedUrl;
-        } finally {
-          reader.releaseLock();
+          // If it's not an Error instance, wrap it in one
+          throw new Error(typeof error === 'string' ? error : 'An unknown error occurred');
         }
       };
 
@@ -191,9 +184,12 @@ export const convertToMP4IfNeeded = async (url: string): Promise<string> => {
     console.log('Uploading MP4 from external source to Supabase');
     return await uploadToSupabase(url, MP4_FORMAT);
     
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error in convertToMP4IfNeeded:', error);
-    throw error;
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error(typeof error === 'string' ? error : 'An unknown error occurred');
   }
 };
 
