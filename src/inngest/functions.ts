@@ -98,19 +98,22 @@ export const convertToMP4IfNeeded = async (url: string): Promise<string> => {
 
           let buffer = '';
           const decoder = new TextDecoder();
-          let convertedUrl: string | null = null;
-          let lastError: string | null = null;
 
           try {
             while (true) {
               const { done, value } = await reader.read();
               
               if (done) {
-                if (convertedUrl) {
-                  return convertedUrl;
-                }
-                if (lastError) {
-                  throw new Error(lastError);
+                // Process any remaining data in buffer
+                if (buffer.trim()) {
+                  try {
+                    const data = JSON.parse(buffer.slice(5)); // Remove 'data: ' prefix
+                    if (data.status === 'Complete' && data.url) {
+                      return data.url;
+                    }
+                  } catch (e) {
+                    console.error('Error parsing final buffer:', e);
+                  }
                 }
                 throw new Error('Stream ended without receiving a URL');
               }
@@ -127,17 +130,11 @@ export const convertToMP4IfNeeded = async (url: string): Promise<string> => {
                     const data = JSON.parse(message.slice(6));
                     
                     if (data.error) {
-                      lastError = data.error;
-                      console.error('Conversion error:', data.error);
-                      continue;
+                      throw new Error(data.error);
                     }
 
                     if (data.status === 'Complete' && data.url) {
-                      convertedUrl = data.url;
-                      console.log('Received converted URL:', convertedUrl);
-                      if (convertedUrl) {
-                        return convertedUrl;
-                      }
+                      return data.url;
                     }
 
                     if (data.status && data.progress) {
@@ -152,10 +149,6 @@ export const convertToMP4IfNeeded = async (url: string): Promise<string> => {
           } finally {
             reader.releaseLock();
           }
-
-          // This line is needed to satisfy TypeScript, though it should never be reached
-          // due to the while(true) loop above that always returns or throws
-          throw new Error('Stream processing ended unexpectedly');
         } catch (error: unknown) {
           clearTimeout(timeoutId);
           if (error instanceof Error) {
@@ -164,7 +157,6 @@ export const convertToMP4IfNeeded = async (url: string): Promise<string> => {
             }
             throw error;
           }
-          // If it's not an Error instance, wrap it in one
           throw new Error(typeof error === 'string' ? error : 'An unknown error occurred');
         }
       };

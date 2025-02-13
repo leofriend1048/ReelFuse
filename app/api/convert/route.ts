@@ -65,6 +65,10 @@ export async function POST(request: Request) {
             const { done, value } = await reader.read();
             
             if (done) {
+              // Process any remaining data in buffer before ending
+              if (buffer.trim()) {
+                await writer.write(encoder.encode(buffer + '\n\n'));
+              }
               break;
             }
 
@@ -72,24 +76,36 @@ export async function POST(request: Request) {
             buffer += decoder.decode(value, { stream: true });
 
             // Process complete messages
-            const messages = buffer.split('\n\n');
-            buffer = messages.pop() || ''; // Keep the last incomplete message
+            let messages = buffer.split('\n\n');
+            
+            // Keep the last incomplete message in the buffer
+            buffer = messages.pop() || '';
 
             // Forward complete messages
             for (const message of messages) {
               if (message.trim()) {
+                try {
+                  // Parse the message to check if it's the completion message
+                  const data = JSON.parse(message.slice(5)); // Remove 'data: ' prefix
+                  if (data.status === 'Complete' && data.url) {
+                    // Ensure the completion message is sent
+                    await writer.write(encoder.encode(message + '\n\n'));
+                    // Close the writer after sending the completion message
+                    await writer.close();
+                    return;
+                  }
+                } catch (e) {
+                  console.error('Error parsing message:', e);
+                }
                 await writer.write(encoder.encode(message + '\n\n'));
               }
             }
           }
 
-          // Process any remaining data in buffer
-          if (buffer.trim()) {
-            await writer.write(encoder.encode(buffer + '\n\n'));
-          }
+          // If we reach here without finding a completion message, close the writer
+          await writer.close();
         } finally {
           reader.releaseLock();
-          await writer.close();
         }
       } catch (error) {
         console.error('Conversion error:', error);
