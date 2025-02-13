@@ -118,4 +118,4 @@ export async function POST(request: Request) {
 }
 
 // This is just for the initial response - the actual conversion continues in the background
-export const maxDuration = 10;
+export const maxDuration = 60;
